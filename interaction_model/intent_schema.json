@@ -1,0 +1,26 @@
+{
+  "intents": [
+    {
+      "intent": "AddProjectIntent",
+      "slots": [
+        {
+          "name": "projectName",
+          "type": "AMAZON.LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "AddTaskProjectIntent",
+      "slots": [
+        {
+          "name": "projectName",
+          "type": "AMAZON.LITERAL"
+        },
+        {
+          "name": "taskName",
+          "type": "AMAZON.LITERAL"
+        }
+      ]
+    }
+  ]
+}

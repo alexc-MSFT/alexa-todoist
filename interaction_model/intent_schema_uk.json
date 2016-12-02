@@ -1,0 +1,13 @@
+{
+  "intents": [
+    {
+      "intent": "AddProject",
+      "slots": [
+        {
+          "name": "projectName",
+          "type": "LITERAL"
+        }
+      ]
+    }
+  ]
+}

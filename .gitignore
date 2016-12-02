@@ -1,0 +1,5 @@
+deploy.env
+lambda.zip
+node_modules/
+.env
+dist/

@@ -1,0 +1,11 @@
+AddProject create project {Home DIY|projectName} 
+AddProject create project {Garden|projectName} 
+AddProject create project {Extension|projectName} 
+AddProject create project {New Year Party|projectName} 
+
+AddTaskToProject add {Paint radiator|taskName} to project {Home DIY|projectName} 
+AddTaskToProject add {Cut the grass|taskName} to project {Garden|projectName} 
+AddTaskToProject add {Buy bricks|taskName} to project {Extension|projectName} 
+AddTaskToProject add {Create playlist|taskName} to project {New Year Party|projectName} 
+
+
