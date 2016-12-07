@@ -34,20 +34,35 @@ var handlers = {
     'AddProjectIntent': function () {
         var that = this;
         var projectName = ((this.event.request.intent.slots.projectName.value) ? this.event.request.intent.slots.projectName.value : that.attributes['projectName'] = projectName);
-        todoist.addProject(this, projectName).then(function (response) {
-            // Check if the sync_status returned ok
-            if (JSON.stringify(response).includes('ok')) {
-                if (that.attributes['createTask']) { that.emit('AddTaskProjectIntent') };
-
-                that.attributes['createProject'] = false;
-                that.emit(':tell', 'Ok, i\'ve created project ' + projectName + ' in your to doist');
+        projectName = projectName.capitalizeFirstLetter()
+        // Check if the project exists
+        todoist.getProjects(this, projectName).then(function (response) {
+            var projectId = findProject(response.projects, projectName);
+            if (projectId) {
+                // Found the project - don't create it
+                that.emit(':tell', 'Project ' + projectName + ' already exists in your list of projects, try adding a task to it.');
+            }
+            else {
+                todoist.addProject(this, projectName).then(function (response) {
+                    // Check if the sync_status returned ok
+                    if (JSON.stringify(response).includes('ok')) {
+                        if (that.attributes['createTask']) { that.emit('AddTaskProjectIntent') };
+                        that.attributes['createProject'] = false;
+                        that.emit(':tell', 'Ok, i\'ve created project ' + projectName + ' in your to doist');
+                    }
+                });
             }
         });
+
+
     },
     'AddTaskProjectIntent': function () {
         var that = this;
         var projectName = ((this.event.request.intent.slots.projectName.value) ? this.event.request.intent.slots.projectName.value : that.attributes['projectName'] = projectName);
         var taskName = ((this.event.request.intent.slots.taskName.value) ? this.event.request.intent.slots.taskName.value : that.attributes['taskName'] = taskName);
+        taskName = taskName.capitalizeFirstLetter()
+        projectName = projectName.capitalizeFirstLetter()
+
         todoist.getProjects(this, projectName).then(function (response) {
             var projectId = findProject(response.projects, projectName);
             if (projectId) {
@@ -76,6 +91,10 @@ var handlers = {
             }
         });
     }
+}
+
+String.prototype.capitalizeFirstLetter = function () {
+    return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
 

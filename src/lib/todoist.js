@@ -42,7 +42,7 @@ function addTaskToProject(that, projectId, taskName) {
 function getProjects(that, projectName) {
 
     var url = todoistURL + commands.buildGetResourceCommand("project");
-    console.log(url);
+
     var options = {
         uri: url,
         headers: {
