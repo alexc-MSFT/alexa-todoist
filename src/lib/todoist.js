@@ -1,6 +1,6 @@
 exports.addProject = addProject;
 exports.addTaskToProject = addTaskToProject;
-exports.getProjects = getProjects;
+exports.getResources = getResources;
 
 var commands = require('./commands.js');
 var request = require('request-promise');
@@ -39,9 +39,9 @@ function addTaskToProject(that, projectId, taskName) {
     return request(options);
 }
 
-function getProjects(that, projectName) {
+function getResources(that, resourceType, resourceName) {
 
-    var url = todoistURL + commands.buildGetResourceCommand("project");
+    var url = todoistURL + commands.buildGetResourceCommand(resourceType);
 
     var options = {
         uri: url,
@@ -52,7 +52,4 @@ function getProjects(that, projectName) {
     };
 
     return request(options);
-
 }
-
-

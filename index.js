@@ -21,6 +21,16 @@ function findProject(projects, projectName) {
     return null;
 }
 
+function findTask(tasks, projectId, taskName) {
+    for (var task in tasks) {
+        if (tasks[task].content.toLowerCase() == taskName.toLowerCase()) {
+            if (tasks[task].project_id == projectId) {
+                return tasks[task].id;
+            }
+        }
+    }
+}
+
 var handlers = {
     // Need to handle errors below!!
     'LaunchRequest': function () {
@@ -36,7 +46,7 @@ var handlers = {
         var projectName = ((this.event.request.intent.slots.projectName.value) ? this.event.request.intent.slots.projectName.value : that.attributes['projectName'] = projectName);
         projectName = projectName.capitalizeFirstLetter()
         // Check if the project exists
-        todoist.getProjects(this, projectName).then(function (response) {
+        todoist.getResources(this, "project", projectName).then(function (response) {
             var projectId = findProject(response.projects, projectName);
             if (projectId) {
                 // Found the project - don't create it
@@ -63,14 +73,27 @@ var handlers = {
         taskName = taskName.capitalizeFirstLetter()
         projectName = projectName.capitalizeFirstLetter()
 
-        todoist.getProjects(this, projectName).then(function (response) {
+        todoist.getResources(this, "project", projectName).then(function (response) {
             var projectId = findProject(response.projects, projectName);
             if (projectId) {
-                // Found the project - now create the task
-                todoist.addTaskToProject(this, projectId, taskName).then(function (response) {
-                    if (JSON.stringify(response).includes('ok')) {
 
-                        that.emit(':tell', 'Ok, i\'ve created task ' + taskName + ' in your to doist Project ' + projectName);
+                todoist.getResources(this, "task", taskName).then(function (response) {
+                    var taskId = findTask(response.items, projectId, taskName);
+
+                    if (taskId) {
+                        that.emit(':tell', 'Task ' + taskName + ' already exists in Project ' + projectName + ', try completing this task or adding a new one.');
+                    }
+
+                    else {
+
+                        // Found the project - now create the task
+                        todoist.addTaskToProject(this, projectId, taskName).then(function (response) {
+                            if (JSON.stringify(response).includes('ok')) {
+
+                                that.emit(':tell', 'Ok, i\'ve created task ' + taskName + ' in your to doist Project ' + projectName);
+                            }
+                        });
+
                     }
                 });
             }

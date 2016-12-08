@@ -3,3 +3,4 @@ lambda.zip
 node_modules/
 .env
 dist/
+test_events/

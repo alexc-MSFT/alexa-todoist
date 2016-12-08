@@ -44,6 +44,9 @@ function buildGetResourceCommand(resourceType) {
         case "project": {
             return "resource_types=[\"projects\"]"
         }
+        case "task": {
+            return "resource_types=[\"items\"]"
+        }
     }
 }
 
