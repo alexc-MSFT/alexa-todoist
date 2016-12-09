@@ -136,7 +136,7 @@ var handlers = {
             }
             else {
                 // Couldn't find the task - possibly ask to create
-                that.emit(':tell', 'I couldn\'t find task ' + taskName + ' in your to doist, do you want to create it?');
+                that.emit(':tell', 'I couldn\'t find task ' + taskName + ' in your to doist, try creating it first.?');
             }
         });
     }

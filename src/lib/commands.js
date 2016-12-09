@@ -46,10 +46,10 @@ function buildCompleteTaskCommand(taskId) {
 
     var completeTaskCommand =
         [{
-            "type": "item_complete",
+            "type": "item_close",
             "temp_id": "" + temp_id + "",
             "uuid": "" + uuid + "",
-            "args": { "ids": [taskId] }
+            "args": { "id": taskId }
         }];
 
     completeTaskCommand = JSON.stringify(completeTaskCommand);
