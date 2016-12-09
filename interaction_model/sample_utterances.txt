@@ -10,7 +10,7 @@ AddProject create a project {New Year Party|projectName}
 
 AddProject create a project called {Home DIY|projectName} 
 AddProject create a project called {Garden|projectName} 
-AddProject create a project called {Extension|projectName} \
+AddProject create a project called {Extension|projectName}
 AddProject create a project called {New Year Party|projectName} 
 
 AddTaskToProject add {Paint radiator|taskName} to project {Home DIY|projectName} 
