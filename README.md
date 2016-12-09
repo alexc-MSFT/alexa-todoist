@@ -6,7 +6,6 @@ You can ask Alexa the following:
 Adding/Creating Projects:
 
 > Alexa, ask Todoist to create project Home DIY
-> Alexa, ask Todoist to create a project called Home DIY
 
 Adding Tasks/Items:
 
