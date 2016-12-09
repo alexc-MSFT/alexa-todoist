@@ -5,7 +5,7 @@
       "slots": [
         {
           "name": "projectName",
-          "type": "AMAZON.LITERAL"
+          "type": "LITERAL"
         }
       ]
     },
@@ -14,11 +14,20 @@
       "slots": [
         {
           "name": "projectName",
-          "type": "AMAZON.LITERAL"
+          "type": "LITERAL"
         },
         {
           "name": "taskName",
-          "type": "AMAZON.LITERAL"
+          "type": "LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "CompleteTaskIntent",
+      "slots": [
+        {
+          "name": "taskName",
+          "type": "LITERAL"
         }
       ]
     }

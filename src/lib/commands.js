@@ -4,6 +4,7 @@ var helpers = require('./helpers.js');
 exports.buildAddProjectCommand = buildAddProjectCommand;
 exports.buildAddTaskCommand = buildAddTaskCommand;
 exports.buildGetResourceCommand = buildGetResourceCommand;
+exports.buildCompleteTaskCommand = buildCompleteTaskCommand;
 
 function buildAddProjectCommand(projectName) {
     var temp_id = helpers.generateUUID();
@@ -37,6 +38,23 @@ function buildAddTaskCommand(taskName, projectId) {
     addTaskCommand = JSON.stringify(addTaskCommand);
 
     return "commands=" + addTaskCommand;
+}
+
+function buildCompleteTaskCommand(taskId) {
+    var temp_id = helpers.generateUUID();
+    var uuid = helpers.generateUUID();
+
+    var completeTaskCommand =
+        [{
+            "type": "item_complete",
+            "temp_id": "" + temp_id + "",
+            "uuid": "" + uuid + "",
+            "args": { "ids": [taskId] }
+        }];
+
+    completeTaskCommand = JSON.stringify(completeTaskCommand);
+
+    return "commands=" + completeTaskCommand;
 }
 
 function buildGetResourceCommand(resourceType) {

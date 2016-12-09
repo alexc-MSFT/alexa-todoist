@@ -24,7 +24,12 @@ function findProject(projects, projectName) {
 function findTask(tasks, projectId, taskName) {
     for (var task in tasks) {
         if (tasks[task].content.toLowerCase() == taskName.toLowerCase()) {
-            if (tasks[task].project_id == projectId) {
+            if (projectId) {
+                if (tasks[task].project_id == projectId) {
+                    return tasks[task].id;
+                }
+            }
+            else {
                 return tasks[task].id;
             }
         }
@@ -111,6 +116,27 @@ var handlers = {
                 //that.emit('AMAZON.YesIntent');
                 that.emit(':ask', speechOutput, 'Do you want me to create it?');
 
+            }
+        });
+    },
+    'CompleteTaskIntent': function () {
+        var that = this;
+        var taskName = ((this.event.request.intent.slots.taskName.value) ? this.event.request.intent.slots.taskName.value : that.attributes['taskName'] = taskName);
+        taskName = taskName.capitalizeFirstLetter();
+
+        todoist.getResources(this, "task", taskName).then(function (response) {
+            var taskId = findTask(response.items, null, taskName);
+
+            if (taskId) {
+                // Complete the task
+                todoist.completeTask(this, taskId).then(function () {
+                    that.emit(':tell', 'Completed task ' + taskName);
+
+                });
+            }
+            else {
+                // Couldn't find the task - possibly ask to create
+                that.emit(':tell', 'I couldn\'t find task ' + taskName + ' in your to doist, do you want to create it?');
             }
         });
     }
