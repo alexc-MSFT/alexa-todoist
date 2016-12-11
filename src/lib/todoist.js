@@ -2,6 +2,8 @@ exports.addProject = addProject;
 exports.addTaskToProject = addTaskToProject;
 exports.getResources = getResources;
 exports.completeTask = completeTask;
+exports.unCompleteTask = unCompleteTask;
+exports.deleteTask = deleteTask;
 
 var commands = require('./commands.js');
 var request = require('request-promise');
@@ -40,6 +42,23 @@ function addTaskToProject(that, projectId, taskName) {
     return request(options);
 }
 
+function deleteTask(that, taskId) {
+
+    var url = todoistURL + commands.buildDeleteTaskCommand(taskId);
+
+    var options = {
+        uri: url,
+        headers: {
+            'User-Agent': 'Request-Promise'
+        },
+        json: true // Automatically parses the JSON string in the response
+    };
+
+    console.log(url);
+
+    return request(options);
+}
+
 function completeTask(that, taskId) {
     var url = todoistURL + commands.buildCompleteTaskCommand(taskId);
 
@@ -52,6 +71,20 @@ function completeTask(that, taskId) {
     };
 
     console.log(url);
+
+    return request(options);
+}
+
+function unCompleteTask(that, taskId) {
+    var url = todoistURL + commands.buildUncompleteTaskCommand(taskId);
+
+    var options = {
+        uri: url,
+        headers: {
+            'User-Agent': 'Request-Promise'
+        },
+        json: true // Automatically parses the JSON string in the response
+    };
 
     return request(options);
 }

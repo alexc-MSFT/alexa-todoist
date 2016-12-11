@@ -23,7 +23,25 @@
       ]
     },
     {
+      "intent": "DeleteTaskIntent",
+      "slots": [
+        {
+          "name": "taskName",
+          "type": "LITERAL"
+        }
+      ]
+    },
+    {
       "intent": "CompleteTaskIntent",
+      "slots": [
+        {
+          "name": "taskName",
+          "type": "LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "UnCompleteTaskIntent",
       "slots": [
         {
           "name": "taskName",

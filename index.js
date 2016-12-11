@@ -119,6 +119,31 @@ var handlers = {
             }
         });
     },
+    'DeleteTaskIntent': function () {
+        var that = this;
+        var taskName = ((this.event.request.intent.slots.taskName.value) ? this.event.request.intent.slots.taskName.value : that.attributes['taskName'] = taskName);
+        taskName = taskName.capitalizeFirstLetter();
+
+        todoist.getResources(this, "task", taskName).then(function (response) {
+            var taskId = findTask(response.items, null, taskName);
+            console.log(taskId);
+
+            if (taskId) {
+                todoist.deleteTask(this, taskId).then(function (response) {
+                    if (JSON.stringify(response).includes('ok')) {
+                        that.emit(':tell', 'I\'ve deleted task ' + taskName);
+                    }
+                });
+            }
+
+            else {
+                // Couldn't find the task - possibly ask to create
+                that.emit(':tell', 'I couldn\'t find task ' + taskName + ' in your to doist.');
+            }
+
+        });
+
+    },
     'CompleteTaskIntent': function () {
         var that = this;
         var taskName = ((this.event.request.intent.slots.taskName.value) ? this.event.request.intent.slots.taskName.value : that.attributes['taskName'] = taskName);
@@ -130,15 +155,50 @@ var handlers = {
             if (taskId) {
                 // Complete the task
                 todoist.completeTask(this, taskId).then(function () {
-                    that.emit(':tell', 'Completed task ' + taskName);
+
+                    var imageObj = {
+                        smallImageUrl: 'https://d3ptyyxy2at9ui.cloudfront.net/262ba9000264fb5fe32f55fe9b77be10.svg',
+                        largeImageUrl: 'https://d3ptyyxy2at9ui.cloudfront.net/262ba9000264fb5fe32f55fe9b77be10.svg'
+                    };
+
+                    that.emit(':tellWithCard', 'Marked task ' + taskName + ' as complete', 'Alexa Todoist', 'Task ' + taskName + ' has been marked as complete.', imageObj)
 
                 });
             }
             else {
                 // Couldn't find the task - possibly ask to create
-                that.emit(':tell', 'I couldn\'t find task ' + taskName + ' in your to doist, try creating it first.?');
+                that.emit(':tell', 'I couldn\'t find task ' + taskName + ' in your to doist.');
             }
         });
+    },
+    'UnCompleteTaskIntent': function () {
+        var that = this;
+        var taskName = ((this.event.request.intent.slots.taskName.value) ? this.event.request.intent.slots.taskName.value : that.attributes['taskName'] = taskName);
+        taskName = taskName.capitalizeFirstLetter();
+
+        todoist.getResources(this, "task", taskName).then(function (response) {
+            var taskId = findTask(response.items, null, taskName);
+            console.log(taskId);
+
+            if (taskId) {
+                // Complete the task
+                todoist.unCompleteTask(this, taskId).then(function () {
+
+                    var imageObj = {
+                        smallImageUrl: 'https://d3ptyyxy2at9ui.cloudfront.net/262ba9000264fb5fe32f55fe9b77be10.svg',
+                        largeImageUrl: 'https://d3ptyyxy2at9ui.cloudfront.net/262ba9000264fb5fe32f55fe9b77be10.svg'
+                    };
+
+                    that.emit(':tellWithCard', 'Marked task ' + taskName + ' as uncomplete', 'Alexa Todoist', 'Task ' + taskName + ' has been marked as uncomplete.', imageObj)
+
+                });
+            }
+            else {
+                // Couldn't find the task - possibly ask to create
+                that.emit(':tell', 'I couldn\'t find task ' + taskName + ' in your to doist, you may not be a todo ist premium user.');
+            }
+        });
+
     }
 }
 

@@ -5,6 +5,8 @@ exports.buildAddProjectCommand = buildAddProjectCommand;
 exports.buildAddTaskCommand = buildAddTaskCommand;
 exports.buildGetResourceCommand = buildGetResourceCommand;
 exports.buildCompleteTaskCommand = buildCompleteTaskCommand;
+exports.buildUncompleteTaskCommand = buildUncompleteTaskCommand;
+exports.buildDeleteTaskCommand = buildDeleteTaskCommand;
 
 function buildAddProjectCommand(projectName) {
     var temp_id = helpers.generateUUID();
@@ -40,6 +42,23 @@ function buildAddTaskCommand(taskName, projectId) {
     return "commands=" + addTaskCommand;
 }
 
+function buildDeleteTaskCommand(taskId) {
+    var temp_id = helpers.generateUUID();
+    var uuid = helpers.generateUUID();
+
+    var addTaskCommand =
+        [{
+            "type": "item_delete",
+            "temp_id": "" + temp_id + "",
+            "uuid": "" + uuid + "",
+            "args": { "ids": [taskId] }
+        }];
+
+    addTaskCommand = JSON.stringify(addTaskCommand);
+
+    return "commands=" + addTaskCommand;
+}
+
 function buildCompleteTaskCommand(taskId) {
     var temp_id = helpers.generateUUID();
     var uuid = helpers.generateUUID();
@@ -55,6 +74,24 @@ function buildCompleteTaskCommand(taskId) {
     completeTaskCommand = JSON.stringify(completeTaskCommand);
 
     return "commands=" + completeTaskCommand;
+}
+
+function buildUncompleteTaskCommand(taskId) {
+    var temp_id = helpers.generateUUID();
+    var uuid = helpers.generateUUID();
+
+    var uncompleteTaskCommand =
+        [{
+            "type": "item_uncomplete",
+            "temp_id": "" + temp_id + "",
+            "uuid": "" + uuid + "",
+            "args": { "ids": + "" + taskId + "" },
+            "restore_stat": {}
+        }];
+
+    uncompleteTaskCommand = JSON.stringify(uncompleteTaskCommand);
+
+    return "commands=" + uncompleteTaskCommand;
 }
 
 function buildGetResourceCommand(resourceType) {
