@@ -11,9 +11,16 @@ Adding/Creating Projects:
 
 Adding Tasks/Items:
 
+> Alexa, ask Tododist to add Paint radiator to project Home DIY
+
 > Alexa, ask Tododist to add task Paint radiator to project Home DIY
+
+Deleting Tasks/Items:
+
 
 Completing Tasks/Items:
 
 > Alexa, ask Tododist to complete Paint radiator 
+
+
 
