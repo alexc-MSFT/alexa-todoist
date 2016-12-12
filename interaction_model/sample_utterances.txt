@@ -1,26 +1,29 @@
-AddProject create project {Home DIY|projectName} 
-AddProject create project {Garden|projectName} 
-AddProject create project {Extension|projectName} 
-AddProject create project {New Year Party|projectName} 
+AddProjectIntent create project {Home DIY|projectName} 
+AddProjectIntent create project {Garden|projectName} 
+AddProjectIntent create project {Extension|projectName} 
+AddProjectIntent create project {New Year Party|projectName} 
 
-AddProject create a project {Home DIY|projectName} 
-AddProject create a project {Garden|projectName} 
-AddProject create a project {Extension|projectName} 
-AddProject create a project {New Year Party|projectName} 
+AddProjectIntent create a project called {Home DIY|projectName} 
+AddProjectIntent create a project called {Garden|projectName} 
+AddProjectIntent create a project called {Extension|projectName}
+AddProjectIntent create a project called {New Year Party|projectName} 
 
-AddProject create a project called {Home DIY|projectName} 
-AddProject create a project called {Garden|projectName} 
-AddProject create a project called {Extension|projectName}
-AddProject create a project called {New Year Party|projectName} 
+AddTaskProjectIntent add task {Paint radiator|taskName} to project {Home DIY|projectName} 
+AddTaskProjectIntent add task {Cut the grass|taskName} to project {Garden|projectName} 
+AddTaskProjectIntent add task {Buy bricks|taskName} to project {Extension|projectName} 
+AddTaskProjectIntent add task {Create playlist|taskName} to project {New Year Party|projectName} 
 
-AddTaskToProject add {Paint radiator|taskName} to project {Home DIY|projectName} 
-AddTaskToProject add {Cut the grass|taskName} to project {Garden|projectName} 
-AddTaskToProject add {Buy bricks|taskName} to project {Extension|projectName} 
-AddTaskToProject add {Create playlist|taskName} to project {New Year Party|projectName} 
+AddTaskProjectIntent add {Paint radiator|taskName} to project {Home DIY|projectName} 
+AddTaskProjectIntent add {Cut the grass|taskName} to project {Garden|projectName} 
+AddTaskProjectIntent add {Buy bricks|taskName} to project {Extension|projectName} 
+AddTaskProjectIntent add {Create playlist|taskName} to project {New Year Party|projectName} 
+
+DeleteTaskIntent delete {Paint radiator|taskName}
+DeleteTaskIntent delete {Cut the grass|taskName}
+DeleteTaskIntent delete {Buy bricks|taskName}
+DeleteTaskIntent delete {Create playlist|taskName}
 
 CompleteTaskIntent complete {Paint radiator|taskName}
 CompleteTaskIntent complete {Cut the grass|taskName}
 CompleteTaskIntent complete {Buy bricks|taskName}
 CompleteTaskIntent complete {Create playlist|taskName}
-
-
