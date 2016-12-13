@@ -5,7 +5,7 @@ var helpers = require('./src/lib/helpers.js');
 var todoist = require('./src/lib/todoist.js');
 var config = require('dotenv').config();
 
-exports.handler = function(event, context, callback) {
+exports.handler = function (event, context, callback) {
     var alexa = Alexa.handler(event, context);
     alexa.registerHandlers(handlers);
     alexa.execute();
@@ -38,29 +38,29 @@ function findTask(tasks, projectId, taskName) {
 
 var handlers = {
     // Need to handle errors below!!
-    'LaunchRequest': function() {
+    'LaunchRequest': function () {
         this.emit(':tell', helpers.LAUNCH_DESCRIPTION);
 
     },
-    'AMAZON.YesIntent': function() {
+    'AMAZON.YesIntent': function () {
 
         // Set attributes so we can persist this across the session
         if (this.attributes["createProject"])
             this.emit('AddProjectIntent');
     },
-    'AddProjectIntent': function() {
+    'AddProjectIntent': function () {
         var that = this;
         var projectName = ((this.event.request.intent.slots) ? this.event.request.intent.slots.projectName.value : that.attributes['projectName']);
         projectName = projectName.capitalizeFirstLetter()
         // Check if the project exists
-        todoist.getResources(this, "project", projectName).then(function(response) {
+        todoist.getResources(this, "project", projectName).then(function (response) {
             var projectId = findProject(response.projects, projectName);
             if (projectId) {
                 // Found the project - don't create it
                 that.emit(':tell', 'Project ' + projectName + ' already exists in your list of projects, try adding a task to it.');
             }
             else {
-                todoist.addProject(this, projectName).then(function(response) {
+                todoist.addProject(this, projectName).then(function (response) {
                     // Check if the sync_status returned ok
                     if (JSON.stringify(response).includes('ok')) {
                         if (that.attributes['createTask'])
@@ -73,18 +73,18 @@ var handlers = {
             }
         });
     },
-    'AddTaskProjectIntent': function() {
+    'AddTaskProjectIntent': function () {
         var that = this;
         var projectName = ((this.event.request.intent.slots) ? this.event.request.intent.slots.projectName.value : that.attributes['projectName']);
         var taskName = ((this.event.request.intent.slots) ? this.event.request.intent.slots.taskName.value : that.attributes['taskName']);
         taskName = taskName.capitalizeFirstLetter()
         projectName = projectName.capitalizeFirstLetter()
 
-        todoist.getResources(this, "project", projectName).then(function(response) {
+        todoist.getResources(this, "project", projectName).then(function (response) {
             var projectId = findProject(response.projects, projectName);
             if (projectId) {
 
-                todoist.getResources(this, "task", taskName).then(function(response) {
+                todoist.getResources(this, "task", taskName).then(function (response) {
                     var taskId = findTask(response.items, projectId, taskName);
 
                     if (taskId) {
@@ -94,7 +94,7 @@ var handlers = {
                     else {
 
                         // Found the project - now create the task
-                        todoist.addTaskToProject(this, projectId, taskName).then(function(response) {
+                        todoist.addTaskToProject(this, projectId, taskName).then(function (response) {
                             if (JSON.stringify(response).includes('ok')) {
                                 if (that.attributes['createProject'] ? that.emit(':tell', 'Ok, i\'ve created project ' + projectName + ' and added task ' + taskName + ' to it.') : that.emit(':tell', 'Ok, i\'ve created task ' + taskName + ' in your to doist Project ' + projectName));
                                 that.attributes['createProject'] = false;
@@ -121,17 +121,16 @@ var handlers = {
             }
         });
     },
-    'DeleteTaskIntent': function() {
+    'DeleteTaskIntent': function () {
         var that = this;
         var taskName = ((this.event.request.intent.slots.taskName.value) ? this.event.request.intent.slots.taskName.value : that.attributes['taskName'] = taskName);
         taskName = taskName.capitalizeFirstLetter();
 
-        todoist.getResources(this, "task", taskName).then(function(response) {
+        todoist.getResources(this, "task", taskName).then(function (response) {
             var taskId = findTask(response.items, null, taskName);
-            console.log(taskId);
 
             if (taskId) {
-                todoist.deleteTask(this, taskId).then(function(response) {
+                todoist.deleteTask(this, taskId).then(function (response) {
                     if (JSON.stringify(response).includes('ok')) {
                         that.emit(':tell', 'I\'ve deleted task ' + taskName);
                     }
@@ -146,17 +145,17 @@ var handlers = {
         });
 
     },
-    'CompleteTaskIntent': function() {
+    'CompleteTaskIntent': function () {
         var that = this;
         var taskName = ((this.event.request.intent.slots.taskName.value) ? this.event.request.intent.slots.taskName.value : that.attributes['taskName'] = taskName);
         taskName = taskName.capitalizeFirstLetter();
 
-        todoist.getResources(this, "task", taskName).then(function(response) {
+        todoist.getResources(this, "task", taskName).then(function (response) {
             var taskId = findTask(response.items, null, taskName);
 
             if (taskId) {
                 // Complete the task
-                todoist.completeTask(this, taskId).then(function() {
+                todoist.completeTask(this, taskId).then(function () {
 
                     var imageObj = {
                         smallImageUrl: 'https://d3ptyyxy2at9ui.cloudfront.net/262ba9000264fb5fe32f55fe9b77be10.svg',
@@ -173,18 +172,18 @@ var handlers = {
             }
         });
     },
-    'UnCompleteTaskIntent': function() {
+    'UnCompleteTaskIntent': function () {
         var that = this;
         var taskName = ((this.event.request.intent.slots.taskName.value) ? this.event.request.intent.slots.taskName.value : that.attributes['taskName'] = taskName);
         taskName = taskName.capitalizeFirstLetter();
 
-        todoist.getResources(this, "task", taskName).then(function(response) {
+        todoist.getResources(this, "task", taskName).then(function (response) {
             var taskId = findTask(response.items, null, taskName);
             console.log(taskId);
 
             if (taskId) {
                 // Complete the task
-                todoist.unCompleteTask(this, taskId).then(function() {
+                todoist.unCompleteTask(this, taskId).then(function () {
 
                     var imageObj = {
                         smallImageUrl: 'https://d3ptyyxy2at9ui.cloudfront.net/262ba9000264fb5fe32f55fe9b77be10.svg',
@@ -204,7 +203,7 @@ var handlers = {
     }
 }
 
-String.prototype.capitalizeFirstLetter = function() {
+String.prototype.capitalizeFirstLetter = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 

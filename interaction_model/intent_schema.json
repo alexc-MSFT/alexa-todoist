@@ -5,7 +5,7 @@
       "slots": [
         {
           "name": "projectName",
-          "type": "LITERAL"
+          "type": "Projects"
         }
       ]
     },
@@ -14,11 +14,11 @@
       "slots": [
         {
           "name": "projectName",
-          "type": "LITERAL"
+          "type": "Projects"
         },
         {
           "name": "taskName",
-          "type": "LITERAL"
+          "type": "Tasks"
         }
       ]
     },
@@ -27,7 +27,7 @@
       "slots": [
         {
           "name": "taskName",
-          "type": "LITERAL"
+          "type": "Tasks"
         }
       ]
     },
@@ -36,7 +36,7 @@
       "slots": [
         {
           "name": "taskName",
-          "type": "LITERAL"
+          "type": "Tasks"
         }
       ]
     },
@@ -45,7 +45,7 @@
       "slots": [
         {
           "name": "taskName",
-          "type": "LITERAL"
+          "type": "Tasks"
         }
       ]
     }

@@ -54,8 +54,6 @@ function deleteTask(that, taskId) {
         json: true // Automatically parses the JSON string in the response
     };
 
-    console.log(url);
-
     return request(options);
 }
 
