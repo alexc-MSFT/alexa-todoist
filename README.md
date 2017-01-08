@@ -100,7 +100,4 @@ Lambda service](https://aws.amazon.com/lambda/).
 *You will notice that the custom slot values above are extremely random - this is deliberate!*
 *The LITERAL slot type that allowed any speech to be captured is deprecated. I decided to use Amazon's recommended approach of custom slot types.* 
 *Because we are creating tasks/projects which could be called anything we can't define a list of values (which is the way custom slot types work).*
-<<<<<<< HEAD
 *I've been told you should create a sensible list of possible values but I found Alexa weighted the speech too heavily to these values so random values yielded better results in returning what the user said correctly.*
-=======
->>>>>>> dev
