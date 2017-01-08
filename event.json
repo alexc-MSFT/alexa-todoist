@@ -1,0 +1,29 @@
+{
+  "session": {
+    "sessionId": "SessionId.71f13dea-2f13-4cca-a8d0-bc9485c58310",
+    "application": {
+      "applicationId": "amzn1.ask.skill.90cb23b9-9f3b-4576-ae8b-fca74b9f6b8e"
+    },
+    "attributes": {},
+    "user": {
+      "userId": "amzn1.ask.account.AGZEDK7HXWPWUPW4LMAJODAYSBIFC3DQAGZELVWGBIMCQHUXZSME5SJKUQI646KLJXVRQPL2QHJJE757OMUIICI5JQ3ONUEDWASNYIHC4RWXW2WGRF6OSSMOUJCZ7OW4T4UIULZQR44QOYXG77FYEWESL2WTQL2575NREKADXDIJW46ZUCCG7LX7TXEVFO5MV3UWXWJOSZKKTSI"
+    },
+    "new": true
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "EdwRequestId.e48b5b7c-7441-49fb-af2e-cc07f63d8e99",
+    "locale": "en-US",
+    "timestamp": "2016-11-17T23:10:38Z",
+    "intent": {
+      "name": "AddProjectIntent",
+      "slots": {
+        "projectName": {
+          "name": "projectName",
+          "value": "test"
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

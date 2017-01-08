@@ -1,0 +1,94 @@
+{
+  "intents": [
+    {
+      "intent": "AddProjectIntent",
+      "slots": [
+        {
+          "name": "projectName",
+          "type": "Projects"
+        }
+      ]
+    },
+    {
+      "intent": "AddTaskIntent",
+      "slots": [
+        {
+          "name": "taskName",
+          "type": "Tasks"
+        },
+        {
+          "name": "taskDate",
+          "type": "AMAZON.DATE"
+        },
+        {
+          "name": "taskTime",
+          "type": "AMAZON.TIME"
+        }
+      ]
+    },
+    {
+      "intent": "TaskDueDateIntent",
+      "slots": [
+        {
+          "name": "taskDate",
+          "type": "AMAZON.DATE"
+        }
+      ]
+    },
+    {
+      "intent": "TaskTimeIntent",
+      "slots": [
+        {
+          "name": "taskTime",
+          "type": "AMAZON.TIME"
+        }
+      ]
+    },
+    {
+      "intent": "AddTaskProjectIntent",
+      "slots": [
+        {
+          "name": "projectName",
+          "type": "Projects"
+        },
+        {
+          "name": "taskName",
+          "type": "Tasks"
+        }
+      ]
+    },
+    {
+      "intent": "DeleteTaskIntent",
+      "slots": [
+        {
+          "name": "taskName",
+          "type": "Tasks"
+        }
+      ]
+    },
+    {
+      "intent": "CompleteTaskIntent",
+      "slots": [
+        {
+          "name": "taskName",
+          "type": "Tasks"
+        }
+      ]
+    },
+    {
+      "intent": "UnCompleteTaskIntent",
+      "slots": [
+        {
+          "name": "taskName",
+          "type": "Tasks"
+        }
+      ]
+    },
+    {
+      "intent": "AMAZON.YesIntent"
+    },
+    {
+      "intent": "AMAZON.NoIntent"
+    }
+  ]
+}
