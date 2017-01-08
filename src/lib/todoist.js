@@ -27,9 +27,14 @@ function addProject(that, projectName) {
     return request(options);
 }
 
-function addTaskToProject(that, projectId, taskName) {
+function addTaskToProject(that, projectId, taskName, taskDate) {
 
-    var url = todoistURL + commands.buildAddTaskCommand(taskName, projectId);
+    // If project id is empty - task will be added to the users inbox
+    // Build this and the command out to accept due dates and times
+
+    var url = todoistURL + commands.buildAddTaskCommand(taskName, taskDate, projectId);
+
+    console.log(url);
 
     var options = {
         uri: url,
@@ -67,8 +72,6 @@ function completeTask(that, taskId) {
         },
         json: true // Automatically parses the JSON string in the response
     };
-
-    console.log(url);
 
     return request(options);
 }

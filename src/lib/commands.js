@@ -25,7 +25,7 @@ function buildAddProjectCommand(projectName) {
     return "commands=" + addProjectCommand;
 }
 
-function buildAddTaskCommand(taskName, projectId) {
+function buildAddTaskCommand(taskName, taskDate, projectId) {
     var temp_id = helpers.generateUUID();
     var uuid = helpers.generateUUID();
 
@@ -34,8 +34,9 @@ function buildAddTaskCommand(taskName, projectId) {
             "type": "item_add",
             "temp_id": "" + temp_id + "",
             "uuid": "" + uuid + "",
-            "args": { "content": "" + taskName + "", "project_id": "" + projectId + "" }
+            "args": { "content": "" + taskName + "", "project_id": "" + projectId + "", "date_string": "" + taskDate }
         }];
+
 
     addTaskCommand = JSON.stringify(addTaskCommand);
 

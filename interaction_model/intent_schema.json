@@ -10,6 +10,41 @@
       ]
     },
     {
+      "intent": "AddTaskIntent",
+      "slots": [
+        {
+          "name": "taskName",
+          "type": "Tasks"
+        },
+        {
+          "name": "taskDate",
+          "type": "AMAZON.DATE"
+        },
+        {
+          "name": "taskTime",
+          "type": "AMAZON.TIME"
+        }
+      ]
+    },
+    {
+      "intent": "TaskDueDateIntent",
+      "slots": [
+        {
+          "name": "taskDate",
+          "type": "AMAZON.DATE"
+        }
+      ]
+    },
+    {
+      "intent": "TaskTimeIntent",
+      "slots": [
+        {
+          "name": "taskTime",
+          "type": "AMAZON.TIME"
+        }
+      ]
+    },
+    {
       "intent": "AddTaskProjectIntent",
       "slots": [
         {
@@ -48,6 +83,12 @@
           "type": "Tasks"
         }
       ]
+    },
+    {
+      "intent": "AMAZON.YesIntent"
+    },
+    {
+      "intent": "AMAZON.NoIntent"
     }
   ]
 }

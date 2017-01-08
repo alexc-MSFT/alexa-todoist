@@ -1,6 +1,6 @@
 exports.generateUUID = generateUUID;
 
-var LAUNCH_DESCRIPTION = exports.LAUNCH_DESCRIPTION = 'This skill allows you to manage your Todoist projects and tasks.';
+var LAUNCH_DESCRIPTION = exports.LAUNCH_DESCRIPTION = 'This skill allows you to manage your To doist projects and tasks.';
 
 function generateUUID() {
     var d = new Date().getTime();

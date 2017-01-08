@@ -1,6 +1,18 @@
-AddProjectIntent create project {projectName} 
+AddProjectIntent add project {projectName} 
 
-AddProjectIntent create a project called {projectName} 
+AddProjectIntent add project called {projectName} 
+
+AddTaskIntent add task {taskName} for {taskDate} at {taskTime}
+
+AddTaskIntent add task called {taskName} for {taskDate} at {taskTime}
+
+AddTaskIntent add task {taskName} for {taskDate}
+
+AddTaskIntent add task called {taskName} for {taskDate}
+
+AddTaskIntent add task {taskName}
+
+AddTaskIntent add task called {taskName}
 
 AddTaskProjectIntent add task {taskName} to project {projectName} 
 
@@ -9,3 +21,9 @@ DeleteTaskIntent delete task {taskName}
 CompleteTaskIntent complete task {taskName}
 
 UnCompleteTaskIntent uncomplete task {taskName}
+
+TaskDueDateIntent {taskDate}
+
+TaskTimeIntent {taskTime}
+
+
