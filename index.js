@@ -141,7 +141,7 @@ var handlers = {
                     todoist.addTaskToProject(this, "", taskName, "").then(function (response) {
                         if (JSON.stringify(response).includes('ok')) {
 
-                            that.emit(':tell', 'Ok, i\'ve created task ' + taskName + ' in your inbox.');
+                            that.emit(':tell', helpers.generateResponse() + ', i\'ve created task ' + taskName + ' in your inbox.');
 
                             that.attributes['createTask'] = false;
                         }

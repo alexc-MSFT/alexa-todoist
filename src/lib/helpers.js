@@ -1,6 +1,18 @@
 exports.generateUUID = generateUUID;
+exports.generateResponse = generateResponse;
 
 var LAUNCH_DESCRIPTION = exports.LAUNCH_DESCRIPTION = 'This skill allows you to manage your To doist projects and tasks.';
+
+var responsesArray = [
+    'OK',
+    'Sure',
+    'No worries',
+    'As you wish',
+    'No problem',
+    'Affirmative',
+    'Done',
+    'Certainly'
+]
 
 function generateUUID() {
     var d = new Date().getTime();
@@ -11,6 +23,12 @@ function generateUUID() {
     });
     return uuid;
 };
+
+function generateResponse() {
+    var randomIndex = Math.floor(Math.random() * responsesArray.length);
+    var response = responsesArray[randomIndex];
+    return response;
+}
 
 
 
