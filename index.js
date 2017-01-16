@@ -41,7 +41,9 @@ var handlers = {
     // Need to handle errors below!!
     'LaunchRequest': function () {
         this.emit(':tell', helpers.LAUNCH_DESCRIPTION);
-
+    },
+    'AMAZON.HelpIntent': function () {
+        this.emit(':ask', helpers.HELP_RESPONSE);
     },
     'AMAZON.YesIntent': function () {
 

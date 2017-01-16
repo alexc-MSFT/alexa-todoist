@@ -2,6 +2,7 @@ exports.generateUUID = generateUUID;
 exports.generateResponse = generateResponse;
 
 var LAUNCH_DESCRIPTION = exports.LAUNCH_DESCRIPTION = 'This skill allows you to manage your To doist projects and tasks.';
+var HELP_RESPONSE = exports.HELP_RESPONSE = 'You can ask To doist to add new tasks to your inbox or projects. Try asking "Add task wash the car" or "Add task walk the dog to project Home".';
 
 var responsesArray = [
     'OK',
