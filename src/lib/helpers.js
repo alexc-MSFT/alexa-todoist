@@ -2,15 +2,15 @@ exports.generateUUID = generateUUID;
 exports.generateResponse = generateResponse;
 
 var LAUNCH_DESCRIPTION = exports.LAUNCH_DESCRIPTION = 'This skill allows you to manage your To doist projects and tasks.';
-var HELP_RESPONSE = exports.HELP_RESPONSE = 'You can ask To doist to add new tasks to your inbox or projects. Try asking "Add task wash the car" or "Add task walk the dog to project Home".';
+var HELP_RESPONSE = exports.HELP_RESPONSE = 'You can ask To doist to add new tasks to your inbox or projects. Try asking "Add task wash the car", or "Add task paint hallway to Project Home".';
 
 var responsesArray = [
     'OK',
     'Sure',
-    'No worries',
-    'As you wish',
-    'No problem',
     'Affirmative',
+    'No problem',
+    'As you wish',
+    'Consider it done',
     'Done',
     'Certainly'
 ]
@@ -30,6 +30,3 @@ function generateResponse() {
     var response = responsesArray[randomIndex];
     return response;
 }
-
-
-

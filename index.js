@@ -69,7 +69,7 @@ var handlers = {
                         if (that.attributes['createTask'])
                         { that.emit('AddTaskProjectIntent') }
                         else {
-                            that.emit(':tell', 'Ok, i\'ve created project ' + projectName + ' in your to doist');
+                            that.emit(':tell', helpers.generateResponse() + ', i\'ve created project ' + projectName + ' in your to doist');
                         }
                     }
                 });
@@ -98,7 +98,7 @@ var handlers = {
                         todoist.addTaskToProject(this, projectId, taskName).then(function (response) {
                             if (JSON.stringify(response).includes('ok')) {
 
-                                that.emit(':tell', 'Ok, i\'ve created task ' + taskName + ' in your to doist Project ' + projectName);
+                                that.emit(':tell', helpers.generateResponse() + ', i\'ve created task ' + taskName + ' in your to doist Project ' + projectName);
 
                                 that.attributes['createProject'] = false;
                             }
@@ -169,7 +169,7 @@ var handlers = {
 
         console.log(that.attributes['taskDate']);
 
-        that.emit(':ask', "Ok, and what time?", "Try saying a time, for example 4pm");
+        that.emit(':ask', 'Ok, and what time?', 'Try saying a time, for example 4pm');
     },
     TaskTimeIntent: function () {
         var that = this;
@@ -184,7 +184,7 @@ var handlers = {
         todoist.addTaskToProject(this, "", taskName, taskDate).then(function (response) {
             if (JSON.stringify(response).includes('ok')) {
 
-                that.emit(':tell', 'Ok, i\'ve created task ' + taskName + ' in your inbox.');
+                that.emit(':tell', helpers.generateResponse() + ', i\'ve created task ' + taskName + ' in your inbox.');
 
                 that.attributes['createTask'] = false;
             }
@@ -209,7 +209,7 @@ var handlers = {
 
         }
         else {
-            speechOutput = 'Ok, and what is the due date for the task?';
+            speechOutput = 'Ok, and what is the due date for the task? If you don\'t want a due date, say No';
             reprompt = "If you don't want a due date, say No, or try saying a date, for example tomorrow or Tuesday 2nd";
         }
 
@@ -227,7 +227,7 @@ var handlers = {
             if (taskId) {
                 todoist.deleteTask(this, taskId).then(function (response) {
                     if (JSON.stringify(response).includes('ok')) {
-                        that.emit(':tell', 'I\'ve deleted task ' + taskName);
+                        that.emit(':tell', helpers.generateResponse() + 'i\'ve deleted task ' + taskName);
                     }
                 });
             }
@@ -257,7 +257,7 @@ var handlers = {
                         largeImageUrl: 'https://d3ptyyxy2at9ui.cloudfront.net/262ba9000264fb5fe32f55fe9b77be10.svg'
                     };
 
-                    that.emit(':tellWithCard', 'Marked task ' + taskName + ' as complete', 'Alexa Todoist', 'Task ' + taskName + ' has been marked as complete.', imageObj)
+                    that.emit(':tellWithCard', 'Nice one, i\'ve marked task ' + taskName + ' as complete', 'Alexa Todoist', 'Task ' + taskName + ' has been marked as complete.', imageObj)
 
                 });
             }
