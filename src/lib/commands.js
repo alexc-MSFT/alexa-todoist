@@ -8,9 +8,10 @@ exports.buildCompleteTaskCommand = buildCompleteTaskCommand;
 exports.buildUncompleteTaskCommand = buildUncompleteTaskCommand;
 exports.buildDeleteTaskCommand = buildDeleteTaskCommand;
 
-function buildAddProjectCommand(projectName) {
+function buildAddProjectCommand(that, projectName) {
     var temp_id = helpers.generateUUID();
     var uuid = helpers.generateUUID();
+    that.attributes["uuid"] = uuid;
 
     var addProjectCommand =
         [{
@@ -25,9 +26,10 @@ function buildAddProjectCommand(projectName) {
     return "commands=" + addProjectCommand;
 }
 
-function buildAddTaskCommand(taskName, taskDate, projectId) {
+function buildAddTaskCommand(that, taskName, taskDate, projectId) {
     var temp_id = helpers.generateUUID();
     var uuid = helpers.generateUUID();
+    that.attributes["uuid"] = uuid;
 
     var addTaskCommand =
         [{
@@ -43,9 +45,10 @@ function buildAddTaskCommand(taskName, taskDate, projectId) {
     return "commands=" + addTaskCommand;
 }
 
-function buildDeleteTaskCommand(taskId) {
+function buildDeleteTaskCommand(that, taskId) {
     var temp_id = helpers.generateUUID();
     var uuid = helpers.generateUUID();
+    that.attributes["uuid"] = uuid;
 
     var addTaskCommand =
         [{
@@ -60,9 +63,10 @@ function buildDeleteTaskCommand(taskId) {
     return "commands=" + addTaskCommand;
 }
 
-function buildCompleteTaskCommand(taskId) {
+function buildCompleteTaskCommand(that, taskId) {
     var temp_id = helpers.generateUUID();
     var uuid = helpers.generateUUID();
+    that.attributes["uuid"] = uuid;
 
     var completeTaskCommand =
         [{
@@ -77,9 +81,10 @@ function buildCompleteTaskCommand(taskId) {
     return "commands=" + completeTaskCommand;
 }
 
-function buildUncompleteTaskCommand(taskId) {
+function buildUncompleteTaskCommand(that, taskId) {
     var temp_id = helpers.generateUUID();
     var uuid = helpers.generateUUID();
+    that.attributes["uuid"] = uuid;
 
     var uncompleteTaskCommand =
         [{

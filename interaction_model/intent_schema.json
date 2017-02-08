@@ -5,7 +5,7 @@
       "slots": [
         {
           "name": "projectName",
-          "type": "Projects"
+          "type": "CatchAll"
         }
       ]
     },
@@ -14,7 +14,7 @@
       "slots": [
         {
           "name": "taskName",
-          "type": "Tasks"
+          "type": "CatchAll"
         },
         {
           "name": "taskDate",
@@ -49,11 +49,11 @@
       "slots": [
         {
           "name": "projectName",
-          "type": "Projects"
+          "type": "CatchAll"
         },
         {
           "name": "taskName",
-          "type": "Tasks"
+          "type": "CatchAll"
         }
       ]
     },
@@ -62,7 +62,7 @@
       "slots": [
         {
           "name": "taskName",
-          "type": "Tasks"
+          "type": "CatchAll"
         }
       ]
     },
@@ -71,7 +71,7 @@
       "slots": [
         {
           "name": "taskName",
-          "type": "Tasks"
+          "type": "CatchAll"
         }
       ]
     },
@@ -80,7 +80,7 @@
       "slots": [
         {
           "name": "taskName",
-          "type": "Tasks"
+          "type": "CatchAll"
         }
       ]
     },

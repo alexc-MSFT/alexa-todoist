@@ -1,8 +1,17 @@
 exports.generateUUID = generateUUID;
 exports.generateResponse = generateResponse;
+exports.findProject = findProject;
+exports.findTask = findTask;
 
-var LAUNCH_DESCRIPTION = exports.LAUNCH_DESCRIPTION = 'This skill allows you to manage your To doist projects and tasks.';
-var HELP_RESPONSE = exports.HELP_RESPONSE = 'You can ask To doist to add new tasks to your inbox or projects. Try asking "Add task wash the car", or "Add task paint hallway to Project Home".';
+var LAUNCH_DESCRIPTION = exports.LAUNCH_DESCRIPTION = 'Welcome to flash tasks, this skill allows you to manage your To doist projects and tasks';
+var TRY_RESPONSE = exports.TRY_RESPONSE = 'Try saying "Add task call Mark"';
+var HELP_RESPONSE = exports.HELP_RESPONSE = 'You can ask flash tasks to add new tasks to your inbox or to projects';
+var ERROR_RESPONSE = exports.ERROR_RESPONSE = 'Sorry but something went wrong';
+
+var cardImg = exports.cardImg = {
+    smallImageUrl: 'https://s3.eu-west-2.amazonaws.com/alexa-flash-tasks/alexa-flasktasks-logo-small.png',
+    largeImageUrl: 'https://s3.eu-west-2.amazonaws.com/alexa-flash-tasks/alexa-flasktasks-logo-large.png'
+};
 
 var responsesArray = [
     'OK',
@@ -30,3 +39,31 @@ function generateResponse() {
     var response = responsesArray[randomIndex];
     return response;
 }
+
+
+function findProject(projects, projectName) {
+    for (var project in projects) {
+        if (projects[project].name.toLowerCase() == projectName.toLowerCase()) {
+            return projects[project].id;
+        }
+    }
+
+    return null;
+}
+
+// Combine these methods
+function findTask(tasks, projectId, taskName) {
+    for (var task in tasks) {
+        if (tasks[task].content.toLowerCase() == taskName.toLowerCase()) {
+            if (projectId) {
+                if (tasks[task].project_id == projectId) {
+                    return tasks[task].id;
+                }
+            }
+            else {
+                return tasks[task].id;
+            }
+        }
+    }
+}
+

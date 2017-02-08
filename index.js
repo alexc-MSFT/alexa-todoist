@@ -4,7 +4,14 @@ var Alexa = require('alexa-sdk');
 var moment = require('moment');
 var helpers = require('./src/lib/helpers.js');
 var todoist = require('./src/lib/todoist.js');
+var projects = require('./src/lib/projects.js');
+var tasks = require('./src/lib/tasks.js');
 var config = require('dotenv').config();
+
+var cardImage = {
+    smallImageUrl: 'https://d3ptyyxy2at9ui.cloudfront.net/262ba9000264fb5fe32f55fe9b77be10.svg',
+    largeImageUrl: 'https://d3ptyyxy2at9ui.cloudfront.net/262ba9000264fb5fe32f55fe9b77be10.svg'
+};
 
 exports.handler = function (event, context, callback) {
     var alexa = Alexa.handler(event, context);
@@ -22,6 +29,7 @@ function findProject(projects, projectName) {
     return null;
 }
 
+// Combine these methods
 function findTask(tasks, projectId, taskName) {
     for (var task in tasks) {
         if (tasks[task].content.toLowerCase() == taskName.toLowerCase()) {
@@ -37,102 +45,49 @@ function findTask(tasks, projectId, taskName) {
     }
 }
 
+// Split out each handler method into seperate files
 var handlers = {
-    // Need to handle errors below!!
     'LaunchRequest': function () {
-        this.emit(':tell', helpers.LAUNCH_DESCRIPTION);
+        //this.emit(':ask', helpers.LAUNCH_DESCRIPTION + "," + helpers.TRY_RESPONSE, helpers.TRY_RESPONSE);
+        this.emit(':ask', 'Welcome to flash tasks', '');
+
     },
     'AMAZON.HelpIntent': function () {
-        this.emit(':ask', helpers.HELP_RESPONSE);
+        this.emit(':ask', helpers.HELP_RESPONSE + helpers.TRY_RESPONSE, helpers.TRY_RESPONSE);
     },
     'AMAZON.YesIntent': function () {
 
-        // Set attributes so we can persist this across the session
+        // Check attributes and emit the correct intent
         if (this.attributes["createProject"])
             this.emit('AddProjectIntent');
     },
     'AddProjectIntent': function () {
-        var that = this;
-        var projectName = ((this.event.request.intent.slots) ? this.event.request.intent.slots.projectName.value : that.attributes['projectName']);
-        projectName = projectName.capitalizeFirstLetter();
-        //Check if the project exists
-        todoist.getResources(this, "project", projectName).then(function (response) {
-            var projectId = findProject(response.projects, projectName);
-            if (projectId) {
-                // Found the project - don't create it
-                that.emit(':tell', 'Project ' + projectName + ' already exists in your list of projects, try adding a task to it.');
-            }
-            else {
-                todoist.addProject(this, projectName).then(function (response) {
-                    // Check if the sync_status returned ok
-                    if (JSON.stringify(response).includes('ok')) {
-                        if (that.attributes['createTask'])
-                        { that.emit('AddTaskProjectIntent') }
-                        else {
-                            that.emit(':tell', helpers.generateResponse() + ', i\'ve created project ' + projectName + ' in your to doist');
-                        }
-                    }
-                });
-            }
-        });
+        try {
+            var that = this;
+            projects.addProject(that);
+        }
+        catch (err) {
+            that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
+        }
     },
     'AddTaskProjectIntent': function () {
-        var that = this;
-        var projectName = ((this.event.request.intent.slots) ? this.event.request.intent.slots.projectName.value : that.attributes['projectName']);
-        var taskName = ((this.event.request.intent.slots) ? this.event.request.intent.slots.taskName.value : that.attributes['taskName']);
-
-        todoist.getResources(this, "project", projectName).then(function (response) {
-            var projectId = findProject(response.projects, projectName);
-            if (projectId) {
-
-                todoist.getResources(this, "task", taskName).then(function (response) {
-                    var taskId = findTask(response.items, projectId, taskName);
-
-                    if (taskId) {
-                        that.emit(':tell', 'Task ' + taskName + ' already exists in Project ' + projectName + ', try completing this task or adding a new one.');
-                    }
-
-                    else {
-
-                        // Found the project - now create the task
-                        todoist.addTaskToProject(this, projectId, taskName).then(function (response) {
-                            if (JSON.stringify(response).includes('ok')) {
-
-                                that.emit(':tell', helpers.generateResponse() + ', i\'ve created task ' + taskName + ' in your to doist Project ' + projectName);
-
-                                that.attributes['createProject'] = false;
-                            }
-                        });
-
-                    }
-                });
-            }
-            else {
-                // Couldn't find the project
-                var speechOutput = 'I couldn\t find a project called ' + projectName + ' in your to doist';
-
-                // Set attributes so we can persist this across the session
-                that.attributes['projectName'] = projectName;
-                that.attributes['createProject'] = true;
-                that.attributes['createTask'] = true;
-                that.attributes['taskName'] = taskName;
-
-                // emit the YesIntent, add attributes, pick them up and handle - fall back to AddTaskProjectIntent after
-                that.emit(':ask', speechOutput, 'Do you want me to create it?');
-
-            }
-        });
+        try {
+            var that = this;
+            tasks.addTaskProjectIntent(that);
+        }
+        catch (err) {
+            that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
+        }
     },
     'Unhandled': function () {
         var that = this;
 
-        // Need a better reply/error message
-        that.emit(':tell', 'Unhandled', '');
+        // Phrase was unhandled - reply with error response
+        that.emit(':tell', helpers.ERROR_RESPONSE);
 
     },
     'AMAZON.NoIntent': function () {
         var that = this;
-
         var taskName = that.attributes['taskName'];
         if (!that.attributes['createProject']) {
             if (that.attributes['createTask']) {
@@ -141,11 +96,14 @@ var handlers = {
                     // Create the task with no due date/time
                     //Add the task - leave project id empty to add task to inbox
                     todoist.addTaskToProject(this, "", taskName, "").then(function (response) {
-                        if (JSON.stringify(response).includes('ok')) {
+                        if (JSON.stringify(response).includes('"' + that.attributes["uuid"] + '":"ok"')) {
 
                             that.emit(':tell', helpers.generateResponse() + ', i\'ve created task ' + taskName + ' in your inbox.');
 
                             that.attributes['createTask'] = false;
+                        }
+                        else {
+                            that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
                         }
                     });
 
@@ -161,34 +119,54 @@ var handlers = {
 
     },
     'TaskDueDateIntent': function () {
-        var that = this;
-        var taskDate = this.event.request.intent.slots.taskDate.value;
+        try {
+            var that = this;
+            var taskDate = this.event.request.intent.slots.taskDate.value;
 
-        // Convert and store the task date in the current session
-        that.attributes['taskDate'] = moment(taskDate, "YYYY-MM-DD").format("MM/DD/YYYY");
+            if (taskDate != "") {
+                // Convert and store the task date in the current session
+                that.attributes['taskDate'] = moment(taskDate, "YYYY-MM-DD").format("MM/DD/YYYY");
 
-        console.log(that.attributes['taskDate']);
+                var speechOutput = 'Ok, and what time? If you don\'t want to set a time for the task, say No';
+                var reprompt = "If you don't want to set a time, say No, or try saying a time, for example 4pm";
 
-        that.emit(':ask', 'Ok, and what time?', 'Try saying a time, for example 4pm');
+                that.emit(':ask', speechOutput, reprompt);
+            }
+            else {
+                that.emit(':tell', "Sorry I didn't understand that, " + helpers.TRY_RESPONSE);
+            }
+        }
+        catch (err) {
+            that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
+        }
+
     },
     TaskTimeIntent: function () {
-        var that = this;
-        var taskTime = this.event.request.intent.slots.taskTime.value;
-        var taskName = that.attributes['taskName'];
-        var taskDate = that.attributes['taskDate'];
+        try {
 
-        // Combine task date and task time
-        taskDate = taskDate + "T" + taskTime;
+            var that = this;
+            var taskTime = this.event.request.intent.slots.taskTime.value;
+            var taskName = that.attributes['taskName'];
+            var taskDate = that.attributes['taskDate'];
 
-        //Add the task - leave project id empty to add task to inbox
-        todoist.addTaskToProject(this, "", taskName, taskDate).then(function (response) {
-            if (JSON.stringify(response).includes('ok')) {
+            // Combine task date and task time
+            taskDate = taskDate + "T" + taskTime;
 
-                that.emit(':tell', helpers.generateResponse() + ', i\'ve created task ' + taskName + ' in your inbox.');
+            //Add the task - leave project id empty to add task to inbox
+            todoist.addTaskToProject(this, "", taskName, taskDate).then(function (response) {
+                if (JSON.stringify(response).includes('"' + that.attributes["uuid"] + '":"ok"')) {
+                    that.attributes['createTask'] = false;
+                    that.emit(':tell', helpers.generateResponse() + ', i\'ve created task ' + taskName + ' in your inbox.');
 
-                that.attributes['createTask'] = false;
-            }
-        });
+                    that.attributes['createTask'] = false;
+                }
+
+                that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
+            });
+        }
+        catch (err) {
+            that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
+        }
 
     },
     'AddTaskIntent': function () {
@@ -204,97 +182,39 @@ var handlers = {
 
         if (taskDate != null && taskTime != null) {
             taskDate = moment(taskDate).format("DD/MM/YYYY");
-            // Convert time as required and add the task
+            // Convert time as required and add the task - todo
             that.attributes['taskDate'] = taskDate;
 
         }
         else {
-            speechOutput = 'Ok, and what is the due date for the task? If you don\'t want a due date, say No';
-            reprompt = "If you don't want a due date, say No, or try saying a date, for example tomorrow or Tuesday 2nd";
+            speechOutput = "Ok, for what date? If you don't want to set a date, say No.";
+            reprompt = "If you don't want to set a date, say No, or try saying a date, for example tomorrow or Tuesday 2nd";
         }
 
         that.emit(':ask', speechOutput, reprompt);
 
     },
     'DeleteTaskIntent': function () {
-        var that = this;
-        var taskName = ((this.event.request.intent.slots.taskName.value) ? this.event.request.intent.slots.taskName.value : that.attributes['taskName'] = taskName);
-        taskName = taskName.capitalizeFirstLetter();
-
-        todoist.getResources(this, "task", taskName).then(function (response) {
-            var taskId = findTask(response.items, null, taskName);
-
-            if (taskId) {
-                todoist.deleteTask(this, taskId).then(function (response) {
-                    if (JSON.stringify(response).includes('ok')) {
-                        that.emit(':tell', helpers.generateResponse() + 'i\'ve deleted task ' + taskName);
-                    }
-                });
-            }
-
-            else {
-                // Couldn't find the task - possibly ask to create
-                that.emit(':tell', 'Sorry, I couldn\'t find task ' + taskName);
-            }
-
-        });
-
+        try {
+            var that = this;
+            tasks.deleteTask(that);
+        }
+        catch (err) {
+            that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
+        }
     },
     'CompleteTaskIntent': function () {
         var that = this;
-        var taskName = ((this.event.request.intent.slots.taskName.value) ? this.event.request.intent.slots.taskName.value : that.attributes['taskName'] = taskName);
-        taskName = taskName.capitalizeFirstLetter();
-
-        todoist.getResources(this, "task", taskName).then(function (response) {
-            var taskId = findTask(response.items, null, taskName);
-
-            if (taskId) {
-                // Complete the task
-                todoist.completeTask(this, taskId).then(function () {
-
-                    var imageObj = {
-                        smallImageUrl: 'https://d3ptyyxy2at9ui.cloudfront.net/262ba9000264fb5fe32f55fe9b77be10.svg',
-                        largeImageUrl: 'https://d3ptyyxy2at9ui.cloudfront.net/262ba9000264fb5fe32f55fe9b77be10.svg'
-                    };
-
-                    that.emit(':tellWithCard', 'Nice one, i\'ve marked task ' + taskName + ' as complete', 'Alexa Todoist', 'Task ' + taskName + ' has been marked as complete.', imageObj)
-
-                });
-            }
-            else {
-                // Couldn't find the task - possibly ask to create
-                that.emit(':tell', 'Sorry, I couldn\'t find task ' + taskName);
-            }
-        });
+        tasks.completeTask(that);
     },
     'UnCompleteTaskIntent': function () {
-        var that = this;
-        var taskName = ((this.event.request.intent.slots.taskName.value) ? this.event.request.intent.slots.taskName.value : that.attributes['taskName'] = taskName);
-        taskName = taskName.capitalizeFirstLetter();
-
-        todoist.getResources(this, "task", taskName).then(function (response) {
-            var taskId = findTask(response.items, null, taskName);
-            console.log(taskId);
-
-            if (taskId) {
-                // Complete the task
-                todoist.unCompleteTask(this, taskId).then(function () {
-
-                    var imageObj = {
-                        smallImageUrl: 'https://d3ptyyxy2at9ui.cloudfront.net/262ba9000264fb5fe32f55fe9b77be10.svg',
-                        largeImageUrl: 'https://d3ptyyxy2at9ui.cloudfront.net/262ba9000264fb5fe32f55fe9b77be10.svg'
-                    };
-
-                    that.emit(':tellWithCard', 'Marked task ' + taskName + ' as uncomplete', 'Alexa Todoist', 'Task ' + taskName + ' has been marked as uncomplete.', imageObj)
-
-                });
-            }
-            else {
-                // Couldn't find the task - possibly ask to create
-                that.emit(':tell', 'I couldn\'t find task ' + taskName + ' in your to doist, you may not be a to doist premium user.');
-            }
-        });
-
+        try {
+            var that = this;
+            tasks.uncompleteTask(that);
+        }
+        catch (err) {
+            that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
+        }
     }
 }
 
@@ -303,6 +223,13 @@ String.prototype.capitalizeFirstLetter = function () {
 }
 
 function clearAttributes() {
+
+}
+
+function isError(response) {
+    if (JSON.stringify(response).includes("sync_status") && JSON.stringify(response).includes('ok')) {
+
+    }
 
 }
 

@@ -12,7 +12,7 @@ var todoistURL = 'https://todoist.com/API/v7/sync?token=' + config.TODOIST_ACCES
 
 function addProject(that, projectName) {
 
-    var addProject = commands.buildAddProjectCommand(projectName);
+    var addProject = commands.buildAddProjectCommand(that, projectName);
 
     var url = todoistURL + addProject;
 
@@ -24,6 +24,8 @@ function addProject(that, projectName) {
         json: true // Automatically parses the JSON string in the response
     };
 
+    var todoistRequest = request(options);
+
     return request(options);
 }
 
@@ -32,9 +34,7 @@ function addTaskToProject(that, projectId, taskName, taskDate) {
     // If project id is empty - task will be added to the users inbox
     // Build this and the command out to accept due dates and times
 
-    var url = todoistURL + commands.buildAddTaskCommand(taskName, taskDate, projectId);
-
-    console.log(url);
+    var url = todoistURL + commands.buildAddTaskCommand(that, taskName, taskDate, projectId);
 
     var options = {
         uri: url,
@@ -49,7 +49,7 @@ function addTaskToProject(that, projectId, taskName, taskDate) {
 
 function deleteTask(that, taskId) {
 
-    var url = todoistURL + commands.buildDeleteTaskCommand(taskId);
+    var url = todoistURL + commands.buildDeleteTaskCommand(that, taskId);
 
     var options = {
         uri: url,
@@ -63,7 +63,7 @@ function deleteTask(that, taskId) {
 }
 
 function completeTask(that, taskId) {
-    var url = todoistURL + commands.buildCompleteTaskCommand(taskId);
+    var url = todoistURL + commands.buildCompleteTaskCommand(that, taskId);
 
     var options = {
         uri: url,
@@ -77,7 +77,7 @@ function completeTask(that, taskId) {
 }
 
 function unCompleteTask(that, taskId) {
-    var url = todoistURL + commands.buildUncompleteTaskCommand(taskId);
+    var url = todoistURL + commands.buildUncompleteTaskCommand(that, taskId);
 
     var options = {
         uri: url,

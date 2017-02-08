@@ -2,19 +2,9 @@ AddProjectIntent add project {projectName}
 
 AddProjectIntent add project called {projectName} 
 
-AddTaskIntent add task {taskName} for {taskDate} at {taskTime}
+AddTaskIntent add {taskName}
 
-AddTaskIntent add task called {taskName} for {taskDate} at {taskTime}
-
-AddTaskIntent add task {taskName} for {taskDate}
-
-AddTaskIntent add task called {taskName} for {taskDate}
-
-AddTaskIntent add task {taskName}
-
-AddTaskIntent add task called {taskName}
-
-AddTaskProjectIntent add task {taskName} to project {projectName} 
+AddTaskProjectIntent add {taskName} to project {projectName} 
 
 DeleteTaskIntent delete task {taskName}
 
