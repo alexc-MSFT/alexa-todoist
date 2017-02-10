@@ -19,6 +19,7 @@
         "request": "^2.79.0"
     },
     "devDependencies": {
-        "bestzip": "^1.1.3"
+        "bestzip": "^1.1.3",
+        "lambda-local": "^1.4.1"
     }
 }
