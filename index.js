@@ -141,7 +141,7 @@ var handlers = {
         }
 
     },
-    TaskTimeIntent: function () {
+    'TaskTimeIntent': function () {
         try {
 
             var that = this;
@@ -187,8 +187,8 @@ var handlers = {
 
         }
         else {
-            speechOutput = "Ok, for what date? If you don't want to set a date, say No.";
-            reprompt = "If you don't want to set a date, say No, or try saying a date, for example tomorrow or Tuesday 2nd";
+            speechOutput = "Ok, for what date? If you don't want to set a date, say no.";
+            reprompt = "If you don't want to set a date, say no, or try saying a date, for example tomorrow or Tuesday 2nd";
         }
 
         that.emit(':ask', speechOutput, reprompt);
