@@ -5,36 +5,48 @@ exports.uncompleteTask = uncompleteTask;
 var helpers = require('./helpers.js');
 var todoist = require('./todoist.js');
 
+// **Change to a generic 'processtask' method for delete, complete and uncomplete**
 function deleteTask(that) {
-    var taskName = ((that.event.request.intent.slots.taskName.value) ? that.event.request.intent.slots.taskName.value : that.attributes['taskName'] = taskName);
+    var taskName = ((that.event.request.intent.slots) ? that.event.request.intent.slots.taskName.value : that.attributes['taskName']);
+    var taskId = (that.attributes['taskId']);
     taskName = taskName.capitalizeFirstLetter();
 
-    todoist.getResources(that, "task", taskName).then(function (response) {
-        var taskId = helpers.findTask(response.items, null, taskName);
+    if (!taskId) {
+        todoist.getResources(that, "task", taskName).then(function (response) {
 
-        if (taskId) {
-            todoist.deleteTask(that, taskId).then(function (response) {
-                if (JSON.stringify(response).includes('"' + that.attributes["uuid"] + '":"ok"')) {
-                    that.emit(':tell', helpers.generateResponse() + ", i've deleted task " + taskName);
+            var taskId = helpers.findTask(response.items, null, taskName);
+            if (taskId) {
+                // Mark task as complete
+                todoist.deleteTask(that, taskName, taskId);
+            }
+            else {
+                var tasksArr = helpers.findMatchingTask(response.items, taskName);
+                if (tasksArr["length"] > 0) {
+                    that.attributes['deleteTask'] = true;
+                    that.attributes['matchingTasks'] = tasksArr;
+                    that.attributes['matchingTasksIndex'] = 0;
+
+                    that.emit(':ask', 'I found ' + tasksArr.length + ' matching tasks, do you mean ' + tasksArr[0].name, 'Do you mean ' + tasksArr[0].name);
                 }
+                else {
+                    //Couldn't find the task - possibly ask to create
+                    that.emit(':tell', 'Sorry, I couldn\'t find task ' + taskName);
+                }
+            }
 
-                that.emit(':tell', helpers.ERROR_RESPONSE);
-            });
-        }
-
-        else {
-            // Couldn't find the task - possibly ask to create
-            that.emit(':tell', "Sorry, I couldn't find task " + taskName);
-        }
-    });
+        });
+    }
+    else {
+        //Mark task as complete
+        todoist.deleteTask(that, taskName, taskId);
+    }
 }
 
 function completeTask(that) {
     // Replace retrieval of intent slot with helper method
     var taskName = ((that.event.request.intent.slots) ? that.event.request.intent.slots.taskName.value : that.attributes['taskName']);
-    taskName = taskName.capitalizeFirstLetter();
-
     var taskId = (that.attributes['taskId']);
+    taskName = taskName.capitalizeFirstLetter();
     
     if (!taskId) {
         todoist.getResources(that, "task", taskName).then(function (response) {

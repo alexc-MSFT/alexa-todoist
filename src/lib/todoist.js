@@ -48,7 +48,7 @@ function addTaskToProject(that, projectId, taskName, taskDate) {
     return request(options);
 }
 
-function deleteTask(that, taskId) {
+function deleteTask(that, taskName, taskId) {
 
     var url = todoistURL + commands.buildDeleteTaskCommand(that, taskId);
 
@@ -60,7 +60,15 @@ function deleteTask(that, taskId) {
         json: true // Automatically parses the JSON string in the response
     };
 
-    return request(options);
+    request(options)
+        .then(function (response) {
+            if (JSON.stringify(response).includes('"' + that.attributes["uuid"] + '":"ok"')) {
+                that.emit(':tell', helpers.generateResponse() + ", i've deleted task " + taskName);
+            }
+            else {
+                that.emit(':tell', helpers.ERROR_RESPONSE);
+            }
+        });
 }
 
 function completeTask(that, taskName, taskId) {
@@ -83,7 +91,7 @@ function completeTask(that, taskName, taskId) {
 
             }
             else {
-                that.emit(':tell', "TEST");
+                that.emit(':tell', helpers.ERROR_RESPONSE);
             }
 
         });

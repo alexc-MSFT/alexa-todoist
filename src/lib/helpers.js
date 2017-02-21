@@ -41,6 +41,9 @@ function generateResponse() {
     return response;
 }
 
+function clearAttributes(that) {
+}
+
 
 function findProject(projects, projectName) {
     for (var project in projects) {

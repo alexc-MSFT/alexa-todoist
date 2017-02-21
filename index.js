@@ -67,7 +67,14 @@ var handlers = {
             this.attributes['matchingTasksIndex'] = 0;
             this.attributes['taskId'] = this.attributes['matchingTasks'][this.attributes['matchingTasksIndex']].id;
             this.attributes['taskName'] = this.attributes['matchingTasks'][this.attributes['matchingTasksIndex']].name;
-            this.emit('CompleteTaskIntent');
+            // Change to a switch statement storing mode in attributes
+            if (this.attributes['completeTask']) {
+                this.emit('CompleteTaskIntent');
+            }
+            else if (this.attributes['deleteTask']) {
+                this.emit('DeleteTaskIntent');
+            }
+
         }
     },
     'AddProjectIntent': function () {
@@ -118,9 +125,9 @@ var handlers = {
 
                 }
             }
-            
-            // Check if we are completing a task
-            if (this.attributes["completeTask"]) {
+
+            // **Check if we are completing or deleting task - coudl just check if the array attribute is populated?**
+            if (this.attributes["completeTask"] || this.attributes["deleteTask"]) {
 
                 if (this.attributes['matchingTasksIndex'] == this.attributes['matchingTasks'].length - 1) {
                     this.emit(':tell', 'I\'m afraid i\'m out of suggestions');
@@ -241,10 +248,6 @@ var handlers = {
 
 String.prototype.capitalizeFirstLetter = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
-}
-
-function clearAttributes() {
-
 }
 
 function isError(response) {
