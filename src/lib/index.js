@@ -61,7 +61,6 @@ var handlers = {
     },
     'AddProjectIntent': function () {
         try {
-            console.log(this);
             var that = this;
             projects.addProject(that);
         }

@@ -31,34 +31,41 @@ function deleteTask(that) {
 
 function completeTask(that) {
     // Replace retrieval of intent slot with helper method
-    var taskName = ((that.event.request.intent.slots.taskName.value) ? that.event.request.intent.slots.taskName.value : that.attributes['taskName'] = taskName);
+    var taskName = ((that.event.request.intent.slots) ? that.event.request.intent.slots.taskName.value : that.attributes['taskName']);
     taskName = taskName.capitalizeFirstLetter();
 
-    todoist.getResources(that, "task", taskName).then(function (response) {
+    var taskId = (that.attributes['taskId']);
+    
+    if (!taskId) {
+        todoist.getResources(that, "task", taskName).then(function (response) {
 
-        var taskId = helpers.findTask(response.items, null, taskName);
-        if (taskId) {
-            // Mark task as complete
-            todoist.completeTask(that, taskId).then(function (response) {
-                // Identify if the todoist response is valid - includes uuid and 'ok'
-                if (JSON.stringify(response).includes('"' + that.attributes["uuid"] + '":"ok"')) {
+            var taskId = helpers.findTask(response.items, null, taskName);
+            if (taskId) {
+                // Mark task as complete
+                todoist.completeTask(that, taskName, taskId);
+            }
+            else {
+                var tasksArr = helpers.findMatchingTask(response.items, taskName);
+                if (tasksArr["length"] > 0) {
+                    that.attributes['completeTask'] = true;
+                    that.attributes['matchingTasks'] = tasksArr;
+                    that.attributes['matchingTasksIndex'] = 0;
 
-                    that.emit(':tellWithCard', "Way to go, i've marked task " + taskName + " as complete.", "Flash Tasks", "Task " + taskName + " has been marked as complete.", helpers.cardImg)
-
+                    that.emit(':ask', 'I found ' + tasksArr.length + ' matching tasks, do you mean ' + tasksArr[0].name, 'Do you mean ' + tasksArr[0].name);
                 }
                 else {
-                    that.emit(':tell', helpers.ERROR_RESPONSE);
+                    //Couldn't find the task - possibly ask to create
+                    that.emit(':tell', 'Sorry, I couldn\'t find task ' + taskName);
                 }
-            });
-        }
-        else {
-            // Couldn't find the task - possibly ask to create
-            that.emit(':tell', 'Sorry, I couldn\'t find task ' + taskName);
-        }
+            }
 
-    });
+        });
+    }
+    else {
+        //Mark task as complete
+        todoist.completeTask(that, taskName, taskId);
+    }
 }
-
 function uncompleteTask(that) {
     var taskName = ((that.event.request.intent.slots.taskName.value) ? that.event.request.intent.slots.taskName.value : that.attributes['taskName'] = taskName);
     taskName = taskName.capitalizeFirstLetter();

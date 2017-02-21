@@ -60,6 +60,15 @@ var handlers = {
         // Check attributes and emit the correct intent
         if (this.attributes["createProject"])
             this.emit('AddProjectIntent');
+
+        if (this.attributes["completeTask"]) {
+
+            // Set attributes for the task to complete;
+            this.attributes['matchingTasksIndex'] = 0;
+            this.attributes['taskId'] = this.attributes['matchingTasks'][this.attributes['matchingTasksIndex']].id;
+            this.attributes['taskName'] = this.attributes['matchingTasks'][this.attributes['matchingTasksIndex']].name;
+            this.emit('CompleteTaskIntent');
+        }
     },
     'AddProjectIntent': function () {
         try {
@@ -109,12 +118,24 @@ var handlers = {
 
                 }
             }
-        }
-        else {
-            that.attributes['createProject'] = false;
-            that.attributes['createTask'] = false;
+            
+            // Check if we are completing a task
+            if (this.attributes["completeTask"]) {
 
-            that.emit(':tell', 'Ok, I won\'t create the project or task');
+                if (this.attributes['matchingTasksIndex'] == this.attributes['matchingTasks'].length - 1) {
+                    this.emit(':tell', 'I\'m afraid i\'m out of suggestions');
+                }
+                else {
+                    this.attributes['matchingTasksIndex'] = this.attributes['matchingTasksIndex'] + 1;
+                    this.emit(':ask', 'Ok, do you mean ' + this.attributes['matchingTasks'][this.attributes['matchingTasksIndex']].name, 'Do you mean ' + this.attributes['matchingTasks'][this.attributes['matchingTasksIndex']].name);
+                }
+            }
+            else {
+                that.attributes['createProject'] = false;
+                that.attributes['createTask'] = false;
+
+                that.emit(':tell', 'Ok, I won\'t create the project or task');
+            }
         }
 
     },

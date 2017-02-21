@@ -2,6 +2,7 @@ exports.generateUUID = generateUUID;
 exports.generateResponse = generateResponse;
 exports.findProject = findProject;
 exports.findTask = findTask;
+exports.findMatchingTask = findMatchingTask;
 
 var LAUNCH_DESCRIPTION = exports.LAUNCH_DESCRIPTION = 'Welcome to flash tasks, this skill allows you to manage your To doist projects and tasks';
 var TRY_RESPONSE = exports.TRY_RESPONSE = 'Try saying "Add task call Mark"';
@@ -66,4 +67,44 @@ function findTask(tasks, projectId, taskName) {
         }
     }
 }
+
+
+function findMatchingTask(tasks, taskName)
+{
+   var tasksArr = [];
+   
+   tasksArr = findMyTask(tasksArr, tasks, taskName);
+
+   console.log(tasksArr);
+
+   if (tasksArr["length"] > 0)
+   {
+       return tasksArr;
+   }
+   else
+   {
+        var taskWords = taskName.split(" ");
+
+        for (i = 0; i < taskWords.length; i++)
+        {
+           tasksArr = findMyTask(tasksArr, tasks, taskWords[i]);
+        }  
+   }
+   
+   return tasksArr;
+
+}
+
+function findMyTask(tasksArr, tasks, taskName){
+
+    for (var task in tasks) {
+        if (tasks[task].content.toLowerCase().includes(taskName.toLowerCase())) {
+            tasksArr.push({id: tasks[task].id, name: tasks[task].content});
+        }
+        
+    }
+
+    return tasksArr;
+}
+
 

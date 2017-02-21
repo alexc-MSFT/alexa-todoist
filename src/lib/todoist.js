@@ -8,6 +8,7 @@ exports.deleteTask = deleteTask;
 var commands = require('./commands.js');
 var request = require('request-promise');
 var config = require('dotenv').config();
+var helpers = require('./helpers.js');
 var todoistURL = 'https://todoist.com/API/v7/sync?token=' + config.TODOIST_ACCESS_TOKEN + '&sync_token=*&';
 
 function addProject(that, projectName) {
@@ -62,7 +63,7 @@ function deleteTask(that, taskId) {
     return request(options);
 }
 
-function completeTask(that, taskId) {
+function completeTask(that, taskName, taskId) {
     var url = todoistURL + commands.buildCompleteTaskCommand(that, taskId);
 
     var options = {
@@ -73,7 +74,19 @@ function completeTask(that, taskId) {
         json: true // Automatically parses the JSON string in the response
     };
 
-    return request(options);
+    request(options)
+        .then(function (response) {
+
+            if (JSON.stringify(response).includes('"' + that.attributes["uuid"] + '":"ok"')) {
+
+                that.emit(':tellWithCard', "Way to go, i've marked task " + taskName + " as complete.", "Flash Tasks", "Task " + taskName + " has been marked as complete.", helpers.cardImg)
+
+            }
+            else {
+                that.emit(':tell', "TEST");
+            }
+
+        });
 }
 
 function unCompleteTask(that, taskId) {
