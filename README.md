@@ -15,13 +15,13 @@ Projects:
 
 Tasks/Items:
 
-> Alexa, ask Todoist to add task Paint radiator
+> Alexa, ask Todoist to add {taskName} e.g. Alexa, ask Todoist to add 'Phone the doctors'
 
-> Alexa, ask Tododist to add task Paint radiator to project Home DIY
+> Alexa, ask Tododist to add 'Paint radiator' to project Home DIY
 
-> Alexa, ask Todoist to add task Paint radiator for 1st January 2017 at Four PM
+> Alexa, ask Todoist to add 'Paint radiator' for 1st January 2017 at Four PM
 
-> Alexa ask Todoist to add task Paint radatior for 1st January 2017
+> Alexa ask Todoist to add 'Paint radatior' for 1st January 2017
 
 Deleting Tasks/Items:
 
@@ -29,7 +29,7 @@ Deleting Tasks/Items:
 
 Completing Tasks/Items:
 
-> Alexa, ask Tododist to complete task Paint radiator 
+> Alexa, ask Todoist to complete 'Phone the doctors'
 
 > Alexa, ask Todoist to uncomplete task Paint radiator
 
@@ -90,14 +90,16 @@ Lambda service](https://aws.amazon.com/lambda/).
 1. Go to the [Alexa Console](https://developer.amazon.com/edw/home.html) and click 'Add a New Skill'.
 2. Set 'Todoist' for the skill name and choose an invocation name, this is what you use to activate your skill - I chose 'to do' as Alexa struggles to understand the phrase 'todoist'!
 3. Select the Lambda ARN for the skill Endpoint and paste the ARN copied from above. Click 'Next'.
-4. Copy the custom slot types from the customSlotTypes folder. Each file in the folder represents a new custom slot type. The name of the file is the name of the custom slot type, and the values in the file are the values for the custom slot. 
+4. Copy the custom slot types from the customSlotTypes folder. This 'catch all' slot is designed to pick up arbrituary spoken phrases as a replacement for AMAZON.LITERAL which is not available in the UK. 
 5. Copy the Intent Schema from the included IntentSchema.json.
 6. Copy the Sample Utterances from the included sample_utterances.txt file. Click 'Next'.
 7. You are now able to start using the skill! You should be able to go to the [Echo page](http://echo.amazon.com/#skills) and see your skill enabled.
 8. In order to test it, try to say some of the Sample Utterances from the Examples above.
 9. Repeat the above for each language/region you want to use the skill in. I am based in the UK so use English (UK).
 
-*You will notice that the custom slot values above are extremely random - this is deliberate!*
+*You will notice that the catchAll slot values above are extremely random - this is deliberate!*
 *The LITERAL slot type that allowed any speech to be captured is deprecated. I decided to use Amazon's recommended approach of custom slot types.* 
 *Because we are creating tasks/projects which could be called anything we can't define a list of values (which is the way custom slot types work).*
 *I've been told you should create a sensible list of possible values but I found Alexa weighted the speech too heavily to these values so random values yielded better results in returning what the user said correctly.*
+
+*Update 21/02/2017 - the LITERAL slot type is back in the US - AMAZON.LITERAL but not for us UK folk! :-(*
