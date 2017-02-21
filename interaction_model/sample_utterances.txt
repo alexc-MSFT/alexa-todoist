@@ -8,7 +8,7 @@ AddTaskProjectIntent add {taskName} to project {projectName}
 
 DeleteTaskIntent delete task {taskName}
 
-CompleteTaskIntent complete task {taskName}
+CompleteTaskIntent complete {taskName}
 
 UnCompleteTaskIntent uncomplete task {taskName}
 
