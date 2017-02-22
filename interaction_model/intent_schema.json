@@ -89,6 +89,9 @@
     },
     {
       "intent": "AMAZON.NoIntent"
+    },
+    {
+      "intent": "KarmaScoreIntent"
     }
   ]
 }

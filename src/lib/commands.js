@@ -7,6 +7,7 @@ exports.buildGetResourceCommand = buildGetResourceCommand;
 exports.buildCompleteTaskCommand = buildCompleteTaskCommand;
 exports.buildUncompleteTaskCommand = buildUncompleteTaskCommand;
 exports.buildDeleteTaskCommand = buildDeleteTaskCommand;
+exports.buildProductivityStatsCommand = buildProductivityStatsCommand;
 
 function buildAddProjectCommand(that, projectName) {
     var temp_id = helpers.generateUUID();
@@ -98,6 +99,11 @@ function buildUncompleteTaskCommand(that, taskId) {
     uncompleteTaskCommand = JSON.stringify(uncompleteTaskCommand);
 
     return "commands=" + uncompleteTaskCommand;
+}
+
+function buildProductivityStatsCommand(that)
+{
+    return "/completed/get_stats";
 }
 
 function buildGetResourceCommand(resourceType) {

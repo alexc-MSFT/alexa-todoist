@@ -6,7 +6,9 @@ var helpers = require('./src/lib/helpers.js');
 var todoist = require('./src/lib/todoist.js');
 var projects = require('./src/lib/projects.js');
 var tasks = require('./src/lib/tasks.js');
+var productivity = require('./src/lib/productivity.js');
 var config = require('dotenv').config();
+
 
 var cardImage = {
     smallImageUrl: 'https://d3ptyyxy2at9ui.cloudfront.net/262ba9000264fb5fe32f55fe9b77be10.svg',
@@ -243,6 +245,10 @@ var handlers = {
         catch (err) {
             that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
         }
+    },
+    'KarmaScoreIntent': function () {
+        var that = this;
+        productivity.getKarmaScore(that);
     }
 }
 

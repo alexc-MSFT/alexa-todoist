@@ -6,7 +6,7 @@ AddTaskIntent add {taskName}
 
 AddTaskProjectIntent add {taskName} to project {projectName} 
 
-DeleteTaskIntent delete task {taskName}
+DeleteTaskIntent delete {taskName}
 
 CompleteTaskIntent complete {taskName}
 
@@ -16,4 +16,6 @@ TaskDueDateIntent {taskDate}
 
 TaskTimeIntent {taskTime}
 
+KarmaScoreIntent what is my karma
 
+KarmaScoreIntent what is my karma score
