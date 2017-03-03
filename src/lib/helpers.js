@@ -4,10 +4,11 @@ exports.findProject = findProject;
 exports.findTask = findTask;
 exports.findMatchingTask = findMatchingTask;
 
-var LAUNCH_DESCRIPTION = exports.LAUNCH_DESCRIPTION = 'Welcome to flash tasks, this skill allows you to manage your To doist projects and tasks';
-var TRY_RESPONSE = exports.TRY_RESPONSE = 'Try saying "Add task call Mark"';
+var LAUNCH_DESCRIPTION = exports.LAUNCH_DESCRIPTION = 'Welcome to Flash Tasks, this skill allows you to manage your To doist projects and tasks';
+var TRY_RESPONSE = exports.TRY_RESPONSE = 'What would you like to do? Try adding a task by saying \'Add\' and then the name of the task';
 var HELP_RESPONSE = exports.HELP_RESPONSE = 'You can ask flash tasks to add new tasks to your inbox or to projects';
 var ERROR_RESPONSE = exports.ERROR_RESPONSE = 'Sorry but something went wrong';
+var CANCEL_RESPONSE = exports.CANCEL_RESPONSE = 'Exiting Flash Tasks';
 
 var cardImg = exports.cardImg = {
     smallImageUrl: 'https://s3.eu-west-2.amazonaws.com/alexa-flash-tasks/alexa-flasktasks-logo-small.png',
@@ -44,6 +45,17 @@ function generateResponse() {
 function clearAttributes(that) {
 }
 
+function isError(response) {
+    if (JSON.stringify(response).includes('"' + that.attributes["uuid"] + '":"ok"')) {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+
+}
+
 
 function findProject(projects, projectName) {
     for (var project in projects) {
@@ -58,6 +70,7 @@ function findProject(projects, projectName) {
 // Combine these methods
 function findTask(tasks, projectId, taskName) {
     for (var task in tasks) {
+        console.log(tasks[task].content.toLowerCase());
         if (tasks[task].content.toLowerCase() == taskName.toLowerCase()) {
             if (projectId) {
                 if (tasks[task].project_id == projectId) {
@@ -70,7 +83,6 @@ function findTask(tasks, projectId, taskName) {
         }
     }
 }
-
 
 function findMatchingTask(tasks, taskName)
 {

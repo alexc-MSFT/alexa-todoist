@@ -9,50 +9,23 @@ var tasks = require('./src/lib/tasks.js');
 var productivity = require('./src/lib/productivity.js');
 var config = require('dotenv').config();
 
-
-var cardImage = {
-    smallImageUrl: 'https://d3ptyyxy2at9ui.cloudfront.net/262ba9000264fb5fe32f55fe9b77be10.svg',
-    largeImageUrl: 'https://d3ptyyxy2at9ui.cloudfront.net/262ba9000264fb5fe32f55fe9b77be10.svg'
-};
-
 exports.handler = function (event, context, callback) {
     var alexa = Alexa.handler(event, context);
     alexa.registerHandlers(handlers);
     alexa.execute();
 };
 
-function findProject(projects, projectName) {
-    for (var project in projects) {
-        if (projects[project].name.toLowerCase() == projectName.toLowerCase()) {
-            return projects[project].id;
-        }
-    }
-
-    return null;
-}
-
-// Combine these methods
-function findTask(tasks, projectId, taskName) {
-    for (var task in tasks) {
-        if (tasks[task].content.toLowerCase() == taskName.toLowerCase()) {
-            if (projectId) {
-                if (tasks[task].project_id == projectId) {
-                    return tasks[task].id;
-                }
-            }
-            else {
-                return tasks[task].id;
-            }
-        }
-    }
-}
-
 // Split out each handler method into seperate files
 var handlers = {
     'LaunchRequest': function () {
-        //this.emit(':ask', helpers.LAUNCH_DESCRIPTION + "," + helpers.TRY_RESPONSE, helpers.TRY_RESPONSE);
-        this.emit(':ask', 'Welcome to flash tasks', '');
+        this.emit(':ask', helpers.LAUNCH_DESCRIPTION + "," + helpers.TRY_RESPONSE, helpers.TRY_RESPONSE);
 
+    },
+    'AMAZON.CancelIntent': function () {
+        this.emit(':tell', helpers.CANCEL_RESPONSE);
+    },
+    'AMAZON.StopIntent': function () {
+        this.emit(':tell', helpers.CANCEL_RESPONSE);
     },
     'AMAZON.HelpIntent': function () {
         this.emit(':ask', helpers.HELP_RESPONSE + helpers.TRY_RESPONSE, helpers.TRY_RESPONSE);
@@ -60,23 +33,26 @@ var handlers = {
     'AMAZON.YesIntent': function () {
 
         // Check attributes and emit the correct intent
-        if (this.attributes["createProject"])
+        if (this.attributes['createProject'])
             this.emit('AddProjectIntent');
 
-        if (this.attributes["completeTask"]) {
+        if (this.attributes['matchingTasks'] != undefined) {
 
-            // Set attributes for the task to complete;
-            this.attributes['matchingTasksIndex'] = 0;
+            if (this.attributes['matchingTasksIndex'] == undefined) {
+                console.log("Test");
+                this.attributes['matchingTasksIndex'] = 0;
+            }
+
             this.attributes['taskId'] = this.attributes['matchingTasks'][this.attributes['matchingTasksIndex']].id;
             this.attributes['taskName'] = this.attributes['matchingTasks'][this.attributes['matchingTasksIndex']].name;
-            // Change to a switch statement storing mode in attributes
-            if (this.attributes['completeTask']) {
+
+            if (this.attributes["completeTask"]) {
                 this.emit('CompleteTaskIntent');
             }
-            else if (this.attributes['deleteTask']) {
+
+            if (this.attributes['deleteTask']) {
                 this.emit('DeleteTaskIntent');
             }
-
         }
     },
     'AddProjectIntent': function () {
@@ -85,7 +61,7 @@ var handlers = {
             projects.addProject(that);
         }
         catch (err) {
-            that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
+            that.emit(':tell', helpers.ERROR_RESPONSE);
         }
     },
     'AddTaskProjectIntent': function () {
@@ -94,14 +70,15 @@ var handlers = {
             tasks.addTaskProjectIntent(that);
         }
         catch (err) {
-            that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
+            that.emit(':tell', helpers.ERROR_RESPONSE);
         }
     },
     'Unhandled': function () {
         var that = this;
 
-        // Phrase was unhandled - reply with error response
-        that.emit(':tell', helpers.ERROR_RESPONSE);
+        // Intent was unhandled - reply with error response
+        // that.emit(':tell', helpers.ERROR_RESPONSE);
+        that.emit(':tell', "Unhandled");
 
     },
     'AMAZON.NoIntent': function () {
@@ -121,32 +98,32 @@ var handlers = {
                             that.attributes['createTask'] = false;
                         }
                         else {
-                            that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
+                            that.emit(':tell', helpers.ERROR_RESPONSE);
                         }
                     });
 
                 }
             }
 
-            // **Check if we are completing or deleting task - coudl just check if the array attribute is populated?**
-            if (this.attributes["completeTask"] || this.attributes["deleteTask"]) {
+        }
+        else {
+            that.attributes['createProject'] = false;
+            that.attributes['createTask'] = false;
 
-                if (this.attributes['matchingTasksIndex'] == this.attributes['matchingTasks'].length - 1) {
-                    this.emit(':tell', 'I\'m afraid i\'m out of suggestions');
-                }
-                else {
-                    this.attributes['matchingTasksIndex'] = this.attributes['matchingTasksIndex'] + 1;
-                    this.emit(':ask', 'Ok, do you mean ' + this.attributes['matchingTasks'][this.attributes['matchingTasksIndex']].name, 'Do you mean ' + this.attributes['matchingTasks'][this.attributes['matchingTasksIndex']].name);
-                }
-            }
-            else {
-                that.attributes['createProject'] = false;
-                that.attributes['createTask'] = false;
-
-                that.emit(':tell', 'Ok, I won\'t create the project or task');
-            }
+            that.emit(':tell', 'Ok, I won\'t create the project.');
         }
 
+        // **Check if we are completing or deleting task - could just check if the array attribute is populated?**
+        if (this.attributes["completeTask"] || this.attributes["deleteTask"]) {
+
+            if (this.attributes['matchingTasksIndex'] == this.attributes['matchingTasks'].length - 1) {
+                this.emit(':tell', 'I\'m afraid i\'m out of suggestions');
+            }
+            else {
+                this.attributes['matchingTasksIndex'] = this.attributes['matchingTasksIndex'] + 1;
+                this.emit(':ask', 'Ok, do you mean ' + this.attributes['matchingTasks'][this.attributes['matchingTasksIndex']].name + ' ?', 'Do you mean ' + this.attributes['matchingTasks'][this.attributes['matchingTasksIndex']].name + ' ?');
+            }
+        }
     },
     'TaskDueDateIntent': function () {
         try {
@@ -163,11 +140,11 @@ var handlers = {
                 that.emit(':ask', speechOutput, reprompt);
             }
             else {
-                that.emit(':tell', "Sorry I didn't understand that, " + helpers.TRY_RESPONSE);
+                that.emit(':tell', 'Sorry I didn\'t understand that, ' + helpers.TRY_RESPONSE);
             }
         }
         catch (err) {
-            that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
+            that.emit(':tell', helpers.ERROR_RESPONSE);
         }
 
     },
@@ -191,11 +168,11 @@ var handlers = {
                     that.attributes['createTask'] = false;
                 }
 
-                that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
+                that.emit(':tell', helpers.ERROR_RESPONSE);
             });
         }
         catch (err) {
-            that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
+            that.emit(':tell', helpers.ERROR_RESPONSE);
         }
 
     },
@@ -207,22 +184,33 @@ var handlers = {
         var taskDate = ((this.event.request.intent.slots) ? this.event.request.intent.slots.taskDate.value : that.attributes['taskDate']);
         var taskTime = ((this.event.request.intent.slots) ? this.event.request.intent.slots.taskTime.value : that.attributes['taskTime']);
         taskName = taskName.capitalizeFirstLetter();
-        that.attributes['taskName'] = taskName;
-        that.attributes['createTask'] = true;
 
-        if (taskDate != null && taskTime != null) {
-            taskDate = moment(taskDate).format("DD/MM/YYYY");
-            // Convert time as required and add the task - todo
-            that.attributes['taskDate'] = taskDate;
+        todoist.getResources(that, "task", taskName).then(function (response) {
+            var taskId = helpers.findTask(response.items, null, taskName);
+            console.log(taskId);
 
-        }
-        else {
-            speechOutput = "Ok, for what date? If you don't want to set a date, say no.";
-            reprompt = "If you don't want to set a date, say no, or try saying a date, for example tomorrow or Tuesday 2nd";
-        }
+            if (!taskId) {
 
-        that.emit(':ask', speechOutput, reprompt);
+                that.attributes['taskName'] = taskName;
+                that.attributes['createTask'] = true;
 
+                if (taskDate != null && taskTime != null) {
+                    taskDate = moment(taskDate).format("DD/MM/YYYY");
+                    // Convert time as required and add the task - todo
+                    that.attributes['taskDate'] = taskDate;
+
+                }
+                else {
+                    speechOutput = 'Ok, for what date? If you don\'t want to set a date, say No';
+                    reprompt = 'If you don\'t want to set a date, say No, or try saying a date, for example tomorrow or Tuesday 2nd';
+
+                    that.emit(':ask', speechOutput, reprompt);
+                }
+            }
+            else {
+                that.emit(':tellWithCard', 'Task ' + taskName + ' already exists in your list, try adding a task to it', 'Flash Tasks', 'Task ' + taskName + ' already exists in your Todoist.', helpers.cardImg);
+            }
+        });
     },
     'DeleteTaskIntent': function () {
         try {
@@ -230,12 +218,17 @@ var handlers = {
             tasks.deleteTask(that);
         }
         catch (err) {
-            that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
+            that.emit(':tell', helpers.ERROR_RESPONSE);
         }
     },
     'CompleteTaskIntent': function () {
-        var that = this;
-        tasks.completeTask(that);
+        try {
+            var that = this;
+            tasks.completeTask(that);
+        }
+        catch (err) {
+            that.emit(':tell', helpers.ERROR_RESPONSE);
+        }
     },
     'UnCompleteTaskIntent': function () {
         try {
@@ -243,24 +236,21 @@ var handlers = {
             tasks.uncompleteTask(that);
         }
         catch (err) {
-            that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
+            that.emit(':tell', helpers.ERROR_RESPONSE);
         }
     },
     'KarmaScoreIntent': function () {
-        var that = this;
-        productivity.getKarmaScore(that);
+        try {
+            var that = this;
+            productivity.getKarmaScore(that);
+        }
+        catch (err) {
+            that.emit(':tell', helpers.ERROR_RESPONSE);
+        }
     }
 }
 
 String.prototype.capitalizeFirstLetter = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
-
-function isError(response) {
-    if (JSON.stringify(response).includes("sync_status") && JSON.stringify(response).includes('ok')) {
-
-    }
-
-}
-
 

@@ -11,7 +11,7 @@ function addProject(that) {
         var projectId = helpers.findProject(response.projects, projectName);
         if (projectId) {
             // Found the project - don't create it
-            that.emit(':tellWithCard', 'Project ' + projectName + ' already exists in your list of projects, try adding a task to it', 'Flash Tasks', 'Project ' + projectName + ' already exists', helpers.cardImg);
+            that.emit(':tellWithCard', 'Project ' + projectName + ' already exists in your list of projects, try adding a task to it', 'Flash Tasks', 'Project ' + projectName + ' already exists in your Todoist.', helpers.cardImg);
         }
         else {
             todoist.addProject(that, projectName).then(function (response) {

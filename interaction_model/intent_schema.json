@@ -90,6 +90,9 @@
     {
       "intent": "AMAZON.NoIntent"
     },
+     {
+      "intent": "AMAZON.CancelIntent"
+    },
     {
       "intent": "KarmaScoreIntent"
     }

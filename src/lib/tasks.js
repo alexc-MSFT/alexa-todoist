@@ -98,7 +98,7 @@ function uncompleteTask(that) {
         }
         else {
             // Couldn't find the task - possibly ask to create
-            that.emit(':tell', 'I couldn\'t find task ' + taskName + ' in your to doist, you may not be a to doist premium user.');
+            that.emit(':tell', 'I couldn\'t find task ' + taskName + ' in your to doist, you may not be a to doist premium user');
         }
     });
 }
@@ -127,7 +127,7 @@ function addTaskProjectIntent(that) {
                             that.attributes['createProject'] = false;
                         }
                         else {
-                            that.emit(':tell', helpers.ERROR_RESPONSE + helpers.TRY_RESPONSE);
+                            that.emit(':tell', helpers.ERROR_RESPONSE);
                         }
                     });
 
